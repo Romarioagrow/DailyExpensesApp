@@ -71,7 +71,6 @@ const PurchaseForm = ({
 const styles = StyleSheet.create({
     tableRow: {
         flexDirection: 'row',
-        borderBottomWidth: 1,
         borderBottomColor: '#ddd',
         paddingHorizontal: 16,
         paddingVertical: 8,
