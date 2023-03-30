@@ -17,7 +17,9 @@ const PurchaseItem = ({ purchase, onDelete }) => {
                     <Text style={styles.itemDescription}>{purchase.description}</Text>
                     <Text style={styles.itemDate}>{new Date(purchase.date).toLocaleDateString()}</Text>
                 </View>
-                <Text style={styles.itemPrice}>${purchase.cost}</Text>
+                <View style={styles.priceCol}>
+                    <Text style={styles.itemPrice}>${purchase.cost}</Text>
+                </View>
             </View>
         </Swipeable>
     );
@@ -32,6 +34,10 @@ const styles = StyleSheet.create({
         borderBottomColor: '#CCCCCC',
         borderBottomWidth: 1,
     },
+    itemInfo: {
+        flexShrink: 1,
+        marginRight: 8,
+    },
     itemType: {
         fontSize: 14,
         fontWeight: 'bold',
@@ -42,6 +48,10 @@ const styles = StyleSheet.create({
     },
     itemDate: {
         fontSize: 14,
+    },
+    priceCol: {
+        width: 80,
+        alignItems: 'flex-end',
     },
     itemPrice: {
         fontSize: 24,
