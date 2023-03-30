@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {RectButton, Swipeable} from "react-native-gesture-handler";
 
 const App = () => {
   const [purchases, setPurchases] = useState([]);
@@ -75,23 +76,29 @@ const App = () => {
         <Text style={styles.header}>Monthly Spending: ${totalSpending.toFixed(2)}</Text>
         <ScrollView style={styles.purchaseList}>
           {purchases.map((purchase, index) => (
-              <View key={index} style={styles.purchaseItem}>
-                <View style={styles.itemInfo}>
-                  <Text style={styles.itemType}>{purchase.type}</Text>
-                  <Text style={styles.itemDescription}>{purchase.description}</Text>
-                  <Text style={styles.itemDate}>{new Date(purchase.date).toLocaleDateString()}</Text>
+              <Swipeable
+                  key={index}
+                  renderRightActions={(progress, dragX) => (
+                      <RectButton
+                          style={styles.deleteButton}
+                          onPress={() => {
+                            const filteredPurchases = purchases.filter(p => p !== purchase);
+                            savePurchases(filteredPurchases);
+                          }}
+                      >
+                        <Text style={styles.deleteButtonText}>Delete</Text>
+                      </RectButton>
+                  )}
+              >
+                <View style={styles.purchaseItem}>
+                  <View style={styles.itemInfo}>
+                    <Text style={styles.itemType}>{purchase.type}</Text>
+                    <Text style={styles.itemDescription}>{purchase.description}</Text>
+                    <Text style={styles.itemDate}>{new Date(purchase.date).toLocaleDateString()}</Text>
+                  </View>
+                  <Text style={styles.itemPrice}>{currencySymbol}{purchase.cost}</Text>
                 </View>
-                <Text style={styles.itemPrice}>{currencySymbol}{purchase.cost}</Text>
-                <TouchableOpacity
-                    style={styles.deleteButton}
-                    onPress={() => {
-                      const filteredPurchases = purchases.filter(p => p !== purchase);
-                      savePurchases(filteredPurchases);
-                    }}
-                >
-                  <Text style={styles.deleteButtonText}>Delete</Text>
-                </TouchableOpacity>
-              </View>
+              </Swipeable>
           ))}
         </ScrollView>
         <View style={styles.addButtonRow}>
