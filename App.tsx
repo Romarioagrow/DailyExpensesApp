@@ -143,57 +143,6 @@ const App = () => {
         </View>
       </View>
   );
-
-  // return (
-  //     <View style={styles.container}>
-  //       <Text style={styles.header}>Monthly Spending: ${totalSpending.toFixed(2)}</Text>
-  //       <ScrollView style={styles.purchaseList}>
-  //         {/* ... (previous code remains unchanged) */}
-  //       </ScrollView>
-  //       <View style={styles.newPurchase}>
-  //         <View style={styles.purchaseTypeCol}>
-  //           <TextInput
-  //               style={styles.purchaseTypeInput}
-  //               placeholder="Type"
-  //               value={newPurchase.type}
-  //               onChangeText={(text) => setNewPurchase({ ...newPurchase, type: text })}
-  //           />
-  //           <TextInput
-  //               style={styles.itemDescriptionInput}
-  //               placeholder="Description"
-  //               value={newPurchase.description}
-  //               onChangeText={(text) => setNewPurchase({ ...newPurchase, description: text })}
-  //               multiline
-  //               numberOfLines={3}
-  //           />
-  //         </View>
-  //         <TouchableOpacity style={styles.datePickerCol} onPress={showDatepicker}>
-  //           <Text style={styles.dateText}>{newPurchase.date.toLocaleDateString()}</Text>
-  //         </TouchableOpacity>
-  //         {showDatePicker && (
-  //             <DateTimePicker
-  //                 testID="dateTimePicker"
-  //                 value={newPurchase.date}
-  //                 mode="date"
-  //                 display="default"
-  //                 onChange={onDateChange}
-  //             />
-  //         )}
-  //         <View style={styles.priceCol}>
-  //           <TextInput
-  //               style={styles.priceInput}
-  //               placeholder="Price"
-  //               value={newPurchase.cost}
-  //               onChangeText={(text) => setNewPurchase({ ...newPurchase, cost: text })}
-  //               keyboardType="numeric"
-  //           />
-  //         </View>
-  //         <TouchableOpacity style={styles.addButton} onPress={addPurchase}>
-  //           <Text style={styles.buttonText}>Add Purchase</Text>
-  //         </TouchableOpacity>
-  //       </View>
-  //     </View>
-  // );
 };
 
 const styles = StyleSheet.create({
@@ -207,7 +156,6 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
   },
-
   input: {
     flex: 1,
     borderColor: '#CCCCCC',
@@ -220,15 +168,9 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 4,
   },
-
   purchaseList: {
     flex: 1,
   },
-  // purchaseItem: {
-  //   padding: 8,
-  //   borderBottomColor: '#CCCCCC',
-  //   borderBottomWidth: 1,
-  // },
   purchaseText: {
     fontSize: 16,
   },
@@ -306,8 +248,6 @@ const styles = StyleSheet.create({
     padding: 8,
     marginBottom: 8,
   },
-
-
   addButtonRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
