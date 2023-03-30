@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput} from 'react-native';
+import {StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput, Dimensions} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -69,55 +69,23 @@ const App = () => {
     setShowDatePicker(true);
   };
 
+  let currencySymbol = '$';
   return (
       <View style={styles.container}>
         <Text style={styles.header}>Monthly Spending: ${totalSpending.toFixed(2)}</Text>
-        <View style={styles.newPurchase}>
-          <TextInput
-              style={styles.input}
-              placeholder="Cost"
-              value={newPurchase.cost}
-              onChangeText={(text) => setNewPurchase({ ...newPurchase, cost: text })}
-              keyboardType="numeric"
-          />
-          <TouchableOpacity style={styles.input} onPress={showDatepicker}>
-            <Text style={styles.dateText}>{newPurchase.date.toLocaleDateString()}</Text>
-          </TouchableOpacity>
-          {showDatePicker && (
-              <DateTimePicker
-                  testID="dateTimePicker"
-                  value={newPurchase.date}
-                  mode="date"
-                  display="default"
-                  onChange={onDateChange}
-              />
-          )}
-          <TextInput
-              style={styles.input}
-              placeholder="Type"
-              value={newPurchase.type}
-              onChangeText={(text) => setNewPurchase({ ...newPurchase, type: text })}
-          />
-          <TouchableOpacity style={styles.button} onPress={addPurchase}>
-            <Text style={styles.buttonText}>Add Purchase</Text>
-          </TouchableOpacity>
-        </View>
-        {/*Scroll view with purchase items*/}
         <ScrollView style={styles.purchaseList}>
           {purchases.map((purchase, index) => (
               <View key={index} style={styles.purchaseItem}>
-                <View style={styles.leftSide}>
+                <View style={styles.itemInfo}>
                   <Text style={styles.itemType}>{purchase.type}</Text>
-                  <Text style={styles.itemDescription}>Description</Text>
+                  <Text style={styles.itemDescription}>{purchase.description}</Text>
                   <Text style={styles.itemDate}>{new Date(purchase.date).toLocaleDateString()}</Text>
                 </View>
-                <View style={styles.rightSide}>
-                  <Text style={styles.itemPrice}>{'$'+`${purchase.cost}`}</Text>
-                </View>
+                <Text style={styles.itemPrice}>{currencySymbol}{purchase.cost}</Text>
                 <TouchableOpacity
                     style={styles.deleteButton}
                     onPress={() => {
-                      const filteredPurchases = purchases.filter((p) => p !== purchase);
+                      const filteredPurchases = purchases.filter(p => p !== purchase);
                       savePurchases(filteredPurchases);
                     }}
                 >
@@ -126,8 +94,106 @@ const App = () => {
               </View>
           ))}
         </ScrollView>
+        <View style={styles.addButtonRow}>
+          <Text style={styles.addNewLabel}>Add new</Text>
+          <TouchableOpacity style={styles.addButton} onPress={addPurchase}>
+            <Text style={styles.buttonText}>Add Purchase</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.newPurchase}>
+          <View style={styles.purchaseTypeCol}>
+            <TextInput
+                style={styles.purchaseTypeInput}
+                placeholder="Type"
+                value={newPurchase.type}
+                onChangeText={(text) => setNewPurchase({ ...newPurchase, type: text })}
+            />
+            <TextInput
+                style={styles.itemDescriptionInput}
+                placeholder="Description"
+                value={newPurchase.description}
+                onChangeText={(text) => setNewPurchase({ ...newPurchase, description: text })}
+                multiline
+                numberOfLines={4}
+            />
+          </View>
+          <View style={styles.datePickerCol}>
+            <TouchableOpacity style={styles.datePickerButton} onPress={showDatepicker}>
+              <Text style={styles.dateText}>{newPurchase.date.toLocaleDateString()}</Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+                <DateTimePicker
+                    testID="dateTimePicker"
+                    value={newPurchase.date}
+                    mode="date"
+                    display="default"
+                    onChange={onDateChange}
+                />
+            )}
+          </View>
+          <View style={styles.priceCol}>
+            <TextInput
+                style={styles.priceInput}
+                placeholder="Price"
+                value={newPurchase.cost}
+                onChangeText={(text) => setNewPurchase({ ...newPurchase, cost: text })}
+                keyboardType="numeric"
+            />
+          </View>
+        </View>
       </View>
   );
+
+  // return (
+  //     <View style={styles.container}>
+  //       <Text style={styles.header}>Monthly Spending: ${totalSpending.toFixed(2)}</Text>
+  //       <ScrollView style={styles.purchaseList}>
+  //         {/* ... (previous code remains unchanged) */}
+  //       </ScrollView>
+  //       <View style={styles.newPurchase}>
+  //         <View style={styles.purchaseTypeCol}>
+  //           <TextInput
+  //               style={styles.purchaseTypeInput}
+  //               placeholder="Type"
+  //               value={newPurchase.type}
+  //               onChangeText={(text) => setNewPurchase({ ...newPurchase, type: text })}
+  //           />
+  //           <TextInput
+  //               style={styles.itemDescriptionInput}
+  //               placeholder="Description"
+  //               value={newPurchase.description}
+  //               onChangeText={(text) => setNewPurchase({ ...newPurchase, description: text })}
+  //               multiline
+  //               numberOfLines={3}
+  //           />
+  //         </View>
+  //         <TouchableOpacity style={styles.datePickerCol} onPress={showDatepicker}>
+  //           <Text style={styles.dateText}>{newPurchase.date.toLocaleDateString()}</Text>
+  //         </TouchableOpacity>
+  //         {showDatePicker && (
+  //             <DateTimePicker
+  //                 testID="dateTimePicker"
+  //                 value={newPurchase.date}
+  //                 mode="date"
+  //                 display="default"
+  //                 onChange={onDateChange}
+  //             />
+  //         )}
+  //         <View style={styles.priceCol}>
+  //           <TextInput
+  //               style={styles.priceInput}
+  //               placeholder="Price"
+  //               value={newPurchase.cost}
+  //               onChangeText={(text) => setNewPurchase({ ...newPurchase, cost: text })}
+  //               keyboardType="numeric"
+  //           />
+  //         </View>
+  //         <TouchableOpacity style={styles.addButton} onPress={addPurchase}>
+  //           <Text style={styles.buttonText}>Add Purchase</Text>
+  //         </TouchableOpacity>
+  //       </View>
+  //     </View>
+  // );
 };
 
 const styles = StyleSheet.create({
@@ -141,11 +207,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
   },
-  newPurchase: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
+
   input: {
     flex: 1,
     borderColor: '#CCCCCC',
@@ -158,10 +220,7 @@ const styles = StyleSheet.create({
     padding: 8,
     borderRadius: 4,
   },
-  buttonText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-  },
+
   purchaseList: {
     flex: 1,
   },
@@ -203,6 +262,68 @@ const styles = StyleSheet.create({
   },
   itemPrice: {
     fontSize: 24,
+    fontWeight: 'bold',
+  },
+  newPurchase: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    padding: 8,
+    borderTopColor: '#CCCCCC',
+    borderTopWidth: 1,
+  },
+  purchaseTypeCol: {
+    flex: 1,
+  },
+  datePickerCol: {
+    flex: 1,
+    alignItems: 'center',
+  },
+  priceCol: {
+    flex: 1,
+    alignItems: 'flex-end',
+  },
+  purchaseTypeInput: {
+    borderColor: '#CCCCCC',
+    borderWidth: 1,
+    padding: 8,
+    marginBottom: 8,
+  },
+  itemDescriptionInput: {
+    borderColor: '#CCCCCC',
+    borderWidth: 1,
+    padding: 8,
+    flexGrow: 1,
+    textAlignVertical: 'top',
+    height: Dimensions.get('window').height * 0.1,
+  },
+  dateText: {
+    fontSize: 16,
+  },
+  priceInput: {
+    borderColor: '#CCCCCC',
+    borderWidth: 1,
+    padding: 8,
+    marginBottom: 8,
+  },
+
+
+  addButtonRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    padding: 8,
+  },
+  addNewLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  addButton: {
+    backgroundColor: '#4CAF50',
+    padding: 8,
+    borderRadius: 4,
+  },
+  buttonText: {
+    color: '#FFFFFF',
     fontWeight: 'bold',
   },
 });
