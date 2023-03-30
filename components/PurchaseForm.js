@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
         padding: 8,
         marginBottom: 4,
         borderRadius: 4,
+        height: 72,
     },
     dateText: {
         fontSize: 16,
