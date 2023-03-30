@@ -17,23 +17,19 @@ const PurchaseForm = ({
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.topRow}>
-                <Text style={styles.addNewLabel}>New Purchase</Text>
-                <TouchableOpacity style={styles.addButton} onPress={addPurchase}>
-                    <Text style={styles.buttonText}>Add Purchase</Text>
-                </TouchableOpacity>
-            </View>
-            <View style={styles.bottomRow}>
-                <View style={[styles.inputCol, {width: '50%'}]}>
+        <View>
+            <View style={styles.tableRow}>
+                <View style={styles.tableCell}>
                     <TextInput
-                        style={styles.inputField}
+                        style={styles.purchaseTypeInput}
                         placeholder="Type"
                         value={newPurchase.type}
                         onChangeText={onTypeChange}
                     />
+                </View>
+                <View style={styles.tableCell}>
                     <TextInput
-                        style={styles.inputField}
+                        style={styles.purchaseTypeInput}
                         placeholder="Description"
                         value={newPurchase.description}
                         onChangeText={onDescriptionChange}
@@ -41,7 +37,7 @@ const PurchaseForm = ({
                         numberOfLines={2}
                     />
                 </View>
-                <View style={[styles.inputCol, {width: '25%'}]}>
+                <View style={styles.tableCell}>
                     <TouchableOpacity style={styles.datePickerButton} onPress={showDatepicker}>
                         <Text style={styles.dateText}>{newPurchase.date.toLocaleDateString()}</Text>
                     </TouchableOpacity>
@@ -55,9 +51,9 @@ const PurchaseForm = ({
                         />
                     )}
                 </View>
-                <View style={[styles.inputCol, {width: '25%'}]}>
+                <View style={styles.tableCell}>
                     <TextInput
-                        style={styles.inputField}
+                        style={styles.priceInput}
                         placeholder="Price"
                         value={newPurchase.cost}
                         onChangeText={onPriceChange}
@@ -65,58 +61,59 @@ const PurchaseForm = ({
                     />
                 </View>
             </View>
+            <TouchableOpacity style={styles.addButton} onPress={addPurchase}>
+                <Text style={styles.buttonText}>Add Purchase</Text>
+            </TouchableOpacity>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        margin: 16,
-    },
-    topRow: {
+    tableRow: {
         flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: 8,
+        borderBottomWidth: 1,
+        borderBottomColor: '#ddd',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
     },
-    bottomRow: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+    tableCell: {
+        flex: 1,
+        width: '50%',
+        marginRight: 8,
     },
-    addNewLabel: {
-        fontSize: 24,
-        fontWeight: 'bold',
+    purchaseTypeInput: {
+        backgroundColor: '#F0F0F0',
+        padding: 8,
+        marginBottom: 4,
+        borderRadius: 4,
+        height: 72,
+    },
+    datePickerButton: {
+        backgroundColor: '#F0F0F0',
+        padding: 8,
+        marginBottom: 4,
+        borderRadius: 4,
+    },
+    dateText: {
+        fontSize: 16,
+    },
+    priceInput: {
+        backgroundColor: '#F0F0F0',
+        padding: 8,
+        borderRadius: 4,
+        height: 72,
+        textAlign: 'right',
     },
     addButton: {
         backgroundColor: '#4CAF50',
         padding: 8,
         borderRadius: 4,
+        margin: 16,
     },
     buttonText: {
         color: '#FFFFFF',
         fontWeight: 'bold',
-    },
-    inputCol: {
-        paddingHorizontal: 8,
-    },
-    inputField: {
-        backgroundColor: '#F0F0F0',
-        padding: 8,
-        marginBottom: 8,
-        borderRadius: 4,
-        height: 50,
-    },
-    datePickerButton: {
-        backgroundColor: '#F0F0F0',
-        padding: 8,
-        borderRadius: 4,
-        height: 50,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    dateText: {
-        fontSize: 16,
+        textAlign: 'center',
     },
 });
 
