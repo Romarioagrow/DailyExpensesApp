@@ -25,20 +25,20 @@ const PurchaseForm = ({
                 </TouchableOpacity>
             </View>
             <View style={styles.newPurchase}>
-                <View style={styles.purchaseTypeCol}>
+                <View style={[styles.purchaseTypeCol, {width: Dimensions.get('window').width/2}]}>
                     <TextInput
-                        style={styles.purchaseTypeInput}
+                        style={[styles.purchaseTypeInput, {height: 50}]}
                         placeholder="Type"
                         value={newPurchase.type}
                         onChangeText={onTypeChange}
                     />
                     <TextInput
-                        style={styles.itemDescriptionInput}
+                        style={[styles.itemDescriptionInput, {height: 50}]}
                         placeholder="Description"
                         value={newPurchase.description}
                         onChangeText={onDescriptionChange}
                         multiline
-                        numberOfLines={4}
+                        numberOfLines={2}
                     />
                 </View>
                 <View style={styles.datePickerCol}>
@@ -55,7 +55,7 @@ const PurchaseForm = ({
                         />
                     )}
                 </View>
-                <View style={styles.priceCol}>
+                <View style={[styles.priceCol, {height: 50}]}>
                     <TextInput
                         style={styles.priceInput}
                         placeholder="Price"
@@ -68,6 +68,7 @@ const PurchaseForm = ({
         </View>
     );
 };
+
 
 const styles = StyleSheet.create({
     addButtonRow: {
@@ -92,12 +93,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: 8,
-        borderTopColor: '#CCCCCC',
-        borderTopWidth: 1,
+        paddingHorizontal: 16,
+        paddingVertical: 8,
     },
     purchaseTypeCol: {
         flex: 1,
+        width: '50%',
+        marginRight: 8,
     },
     datePickerCol: {
         flex: 1,
@@ -108,28 +110,32 @@ const styles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     purchaseTypeInput: {
-        borderColor: '#CCCCCC',
-        borderWidth: 1,
+        backgroundColor: '#F0F0F0',
         padding: 8,
-        marginBottom: 8,
+        marginBottom: 4,
+        borderRadius: 4,
+        height: 72,
     },
     itemDescriptionInput: {
-        borderColor: '#CCCCCC',
-        borderWidth: 1,
+        backgroundColor: '#F0F0F0',
         padding: 8,
         flexGrow: 1,
         textAlignVertical: 'top',
-        height: Dimensions.get('window').height * 0.1,
+        borderRadius: 4,
+        height: 72,
     },
     dateText: {
         fontSize: 16,
     },
     priceInput: {
-        borderColor: '#CCCCCC',
-        borderWidth: 1,
+        backgroundColor: '#F0F0F0',
         padding: 8,
-        marginBottom: 8,
+        borderRadius: 4,
+        height: 72,
+        textAlign: 'right',
     },
 });
+
+
 
 export default PurchaseForm;
