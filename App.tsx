@@ -14,29 +14,35 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const App = () => {
   const [purchases, setPurchases] = useState([]);
   const [totalSpending, setTotalSpending] = useState(0);
-  const [newPurchase, setNewPurchase] = useState({ cost: '', date: new Date(), type: '' });
+  const [newPurchase, setNewPurchase] = useState({
+    cost: '',
+    date: new Date(),
+    type: '',
+  });
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
-    const total = purchases.reduce((sum, purchase) => sum + parseFloat(purchase.cost), 0);
+    const total = purchases.reduce(
+        (sum, purchase) => sum + parseFloat(purchase.cost),
+        0
+    );
     setTotalSpending(total);
   }, [purchases]);
 
   useEffect(() => {
-    const total = purchases.reduce((sum, purchase) => sum + parseFloat(purchase.cost), 0);
-    setTotalSpending(total);
-  }, []);
-
-  const loadPurchases = async () => {
-    try {
-      const data = await AsyncStorage.getItem('purchases');
-      if (data) {
-        setPurchases(JSON.parse(data));
+    const loadPurchases = async () => {
+      try {
+        const data = await AsyncStorage.getItem('purchases');
+        if (data) {
+          setPurchases(JSON.parse(data));
+        }
+      } catch (error) {
+        console.error('Error loading purchases:', error);
       }
-    } catch (error) {
-      console.error('Error loading purchases:', error);
-    }
-  };
+    };
+
+    loadPurchases();
+  }, []);
 
   const savePurchases = async (newPurchases) => {
     try {
@@ -53,6 +59,12 @@ const App = () => {
     }
     savePurchases([...purchases, newPurchase]);
     setNewPurchase({ cost: '', date: new Date(), type: '' });
+  };
+
+  const deletePurchase = (index) => {
+    const newPurchases = [...purchases];
+    newPurchases.splice(index, 1);
+    savePurchases(newPurchases);
   };
 
   const onDateChange = (event, selectedDate) => {
@@ -104,6 +116,12 @@ const App = () => {
                 <Text style={styles.purchaseText}>
                   ${purchase.cost} - {new Date(purchase.date).toLocaleDateString()} - {purchase.type}
                 </Text>
+                <TouchableOpacity style={styles.deleteButton} onPress={() => {
+                  const filteredPurchases = purchases.filter(p => p !== purchase);
+                  savePurchases(filteredPurchases);
+                }}>
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
               </View>
           ))}
         </ScrollView>
