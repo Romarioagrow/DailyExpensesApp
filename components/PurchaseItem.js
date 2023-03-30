@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
     },
     priceCol: {
         width: 80,
-        alignItems: 'flex-end',
+        alignItems: 'flex-start',
     },
     itemPrice: {
         fontSize: 24,
