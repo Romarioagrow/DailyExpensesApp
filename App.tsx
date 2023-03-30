@@ -112,7 +112,7 @@ const App = () => {
                   <Text style={styles.itemDate}>{new Date(purchase.date).toLocaleDateString()}</Text>
                 </View>
                 <View style={styles.rightSide}>
-                  <Text style={styles.itemPrice}>{`${purchase.cost}`}</Text>
+                  <Text style={styles.itemPrice}>{'$'+`${purchase.cost}`}</Text>
                 </View>
                 <TouchableOpacity
                     style={styles.deleteButton}
