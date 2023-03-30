@@ -55,9 +55,9 @@ const PurchaseForm = ({
                         />
                     )}
                 </View>
-                <View style={[styles.priceCol, {height: 50}]}>
+                <View style={[styles.priceCol, {height: 50, width: Dimensions.get('window').width/4}]}>
                     <TextInput
-                        style={styles.priceInput}
+                        style={[styles.priceInput, {width: '100%'}]}
                         placeholder="Price"
                         value={newPurchase.cost}
                         onChangeText={onPriceChange}
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
     priceCol: {
         flex: 1,
         alignItems: 'flex-end',
+        width: '50%',
     },
     purchaseTypeInput: {
         backgroundColor: '#F0F0F0',
@@ -133,9 +134,8 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         height: 72,
         textAlign: 'right',
+        width: Dimensions.get('window').width / 2,
     },
 });
-
-
 
 export default PurchaseForm;
