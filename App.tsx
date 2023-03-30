@@ -1,14 +1,6 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
 import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const App = () => {
@@ -110,16 +102,25 @@ const App = () => {
             <Text style={styles.buttonText}>Add Purchase</Text>
           </TouchableOpacity>
         </View>
+        {/*Scroll view with purchase items*/}
         <ScrollView style={styles.purchaseList}>
           {purchases.map((purchase, index) => (
               <View key={index} style={styles.purchaseItem}>
-                <Text style={styles.purchaseText}>
-                  ${purchase.cost} - {new Date(purchase.date).toLocaleDateString()} - {purchase.type}
-                </Text>
-                <TouchableOpacity style={styles.deleteButton} onPress={() => {
-                  const filteredPurchases = purchases.filter(p => p !== purchase);
-                  savePurchases(filteredPurchases);
-                }}>
+                <View style={styles.leftSide}>
+                  <Text style={styles.itemType}>{purchase.type}</Text>
+                  <Text style={styles.itemDescription}>Description</Text>
+                  <Text style={styles.itemDate}>{new Date(purchase.date).toLocaleDateString()}</Text>
+                </View>
+                <View style={styles.rightSide}>
+                  <Text style={styles.itemPrice}>{`${purchase.cost}`}</Text>
+                </View>
+                <TouchableOpacity
+                    style={styles.deleteButton}
+                    onPress={() => {
+                      const filteredPurchases = purchases.filter((p) => p !== purchase);
+                      savePurchases(filteredPurchases);
+                    }}
+                >
                   <Text style={styles.deleteButtonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
@@ -164,13 +165,45 @@ const styles = StyleSheet.create({
   purchaseList: {
     flex: 1,
   },
+  // purchaseItem: {
+  //   padding: 8,
+  //   borderBottomColor: '#CCCCCC',
+  //   borderBottomWidth: 1,
+  // },
+  purchaseText: {
+    fontSize: 16,
+  },
   purchaseItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     padding: 8,
     borderBottomColor: '#CCCCCC',
     borderBottomWidth: 1,
   },
-  purchaseText: {
-    fontSize: 16,
+  leftSide: {
+    flex: 3,
+    justifyContent: 'space-between',
+  },
+  rightSide: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+  },
+  itemType: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  itemDescription: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  itemDate: {
+    fontSize: 14,
+  },
+  itemPrice: {
+    fontSize: 24,
+    fontWeight: 'bold',
   },
 });
 
