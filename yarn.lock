@@ -1610,6 +1610,13 @@
     "prompts" "^2.4.0"
     "semver" "^6.3.0"
 
+"@react-native-community/datetimepicker@^7.0.0":
+  "integrity" "sha512-3xbTEKKQUW2S7Fuj654u1Yrn7gk1N9d9Y3xNPBB+uW5E9Yh7DbRqNJhAIliIaPRgEp5M5Hdz2HwtKnWjN/M8/g=="
+  "resolved" "https://registry.npmjs.org/@react-native-community/datetimepicker/-/datetimepicker-7.0.0.tgz"
+  "version" "7.0.0"
+  dependencies:
+    "invariant" "^2.2.4"
+
 "@react-native-community/eslint-config@^3.2.0":
   "integrity" "sha512-ZjGvoeiBtCbd506hQqwjKmkWPgynGUoJspG8/MuV/EfKnkjCtBmeJvq2n+sWbWEvL9LWXDp2GJmPzmvU5RSvKQ=="
   "resolved" "https://registry.npmjs.org/@react-native-community/eslint-config/-/eslint-config-3.2.0.tgz"
@@ -5229,6 +5236,11 @@
   dependencies:
     "minimist" "^1.2.6"
 
+"moment@^2.22.0":
+  "integrity" "sha512-5LC9SOxjSc2HF6vO2CyuTDNivEdoz2IvyJJGj6X8DJ0eFyfszE0QiEd+iXmBvUP3WHxSjFH/vIsA0EN00cgr8w=="
+  "resolved" "https://registry.npmjs.org/moment/-/moment-2.29.4.tgz"
+  "version" "2.29.4"
+
 "ms@2.0.0":
   "integrity" "sha512-Tpp60P6IUJDTuOq/5Z8cdskzJujfwqfOTkrwIwj7IRISpnkJnT6SyJ4PCPnGMoFjC9ddhal5KVIYtAt97ix05A=="
   "resolved" "https://registry.npmjs.org/ms/-/ms-2.0.0.tgz"
@@ -5805,6 +5817,13 @@
     "flow-parser" "^0.185.0"
     "jscodeshift" "^0.13.1"
     "nullthrows" "^1.1.1"
+
+"react-native-datepicker@^1.7.2":
+  "integrity" "sha512-ses0N1y44fYBmlejYwR2i+dGnQQ8v5/gacX2CrbFJiWxbcQaRuxexsZPB9YQuQkAy+uKz5Gti3Lrp3dh9BfkzA=="
+  "resolved" "https://registry.npmjs.org/react-native-datepicker/-/react-native-datepicker-1.7.2.tgz"
+  "version" "1.7.2"
+  dependencies:
+    "moment" "^2.22.0"
 
 "react-native-gradle-plugin@^0.71.17":
   "integrity" "sha512-OXXYgpISEqERwjSlaCiaQY6cTY5CH6j73gdkWpK0hedxtiWMWgH+i5TOi4hIGYitm9kQBeyDu+wim9fA8ROFJA=="

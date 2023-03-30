@@ -9,10 +9,23 @@ import React, {useState, useEffect} from 'react';
 import {StyleSheet, Text, View, TouchableOpacity, ScrollView, TextInput} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 const App = () => {
   const [purchases, setPurchases] = useState([]);
   const [totalSpending, setTotalSpending] = useState(0);
-  const [newPurchase, setNewPurchase] = useState({cost: '', date: '', type: ''});
+  const [newPurchase, setNewPurchase] = useState({ cost: '', date: new Date(), type: '' });
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+  useEffect(() => {
+    const total = purchases.reduce((sum, purchase) => sum + parseFloat(purchase.cost), 0);
+    setTotalSpending(total);
+  }, [purchases]);
+
+  useEffect(() => {
+    const total = purchases.reduce((sum, purchase) => sum + parseFloat(purchase.cost), 0);
+    setTotalSpending(total);
+  }, []);
 
   const loadPurchases = async () => {
     try {
@@ -24,15 +37,6 @@ const App = () => {
       console.error('Error loading purchases:', error);
     }
   };
-
-  useEffect(() => {
-    loadPurchases();
-  }, []);
-
-  useEffect(() => {
-    const total = purchases.reduce((sum, purchase) => sum + parseFloat(purchase.cost), 0);
-    setTotalSpending(total);
-  }, [purchases]);
 
   const savePurchases = async (newPurchases) => {
     try {
@@ -48,7 +52,17 @@ const App = () => {
       return;
     }
     savePurchases([...purchases, newPurchase]);
-    setNewPurchase({cost: '', date: '', type: ''});
+    setNewPurchase({ cost: '', date: new Date(), type: '' });
+  };
+
+  const onDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate || newPurchase.date;
+    setShowDatePicker(false);
+    setNewPurchase({ ...newPurchase, date: currentDate });
+  };
+
+  const showDatepicker = () => {
+    setShowDatePicker(true);
   };
 
   return (
@@ -59,20 +73,26 @@ const App = () => {
               style={styles.input}
               placeholder="Cost"
               value={newPurchase.cost}
-              onChangeText={(text) => setNewPurchase({...newPurchase, cost: text})}
+              onChangeText={(text) => setNewPurchase({ ...newPurchase, cost: text })}
               keyboardType="numeric"
           />
-          <TextInput
-              style={styles.input}
-              placeholder="Date (YYYY-MM-DD)"
-              value={newPurchase.date}
-              onChangeText={(text) => setNewPurchase({...newPurchase, date: text})}
-          />
+          <TouchableOpacity style={styles.input} onPress={showDatepicker}>
+            <Text style={styles.dateText}>{newPurchase.date.toLocaleDateString()}</Text>
+          </TouchableOpacity>
+          {showDatePicker && (
+              <DateTimePicker
+                  testID="dateTimePicker"
+                  value={newPurchase.date}
+                  mode="date"
+                  display="default"
+                  onChange={onDateChange}
+              />
+          )}
           <TextInput
               style={styles.input}
               placeholder="Type"
               value={newPurchase.type}
-              onChangeText={(text) => setNewPurchase({...newPurchase, type: text})}
+              onChangeText={(text) => setNewPurchase({ ...newPurchase, type: text })}
           />
           <TouchableOpacity style={styles.button} onPress={addPurchase}>
             <Text style={styles.buttonText}>Add Purchase</Text>
@@ -81,7 +101,9 @@ const App = () => {
         <ScrollView style={styles.purchaseList}>
           {purchases.map((purchase, index) => (
               <View key={index} style={styles.purchaseItem}>
-                <Text style={styles.purchaseText}>${purchase.cost} - {purchase.date} - {purchase.type}</Text>
+                <Text style={styles.purchaseText}>
+                  ${purchase.cost} - {new Date(purchase.date).toLocaleDateString()} - {purchase.type}
+                </Text>
               </View>
           ))}
         </ScrollView>
