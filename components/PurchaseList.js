@@ -4,21 +4,21 @@ import PurchaseItem from './PurchaseItem';
 
 const PurchaseList = ({ purchases, deletePurchase }) => {
     return (
-        <ScrollView style={styles.purchaseList}>
-            {purchases.map((purchase, index) => (
-                <PurchaseItem
-                    key={index}
-                    purchase={purchase}
-                    onDelete={() => deletePurchase(index)}
-                />
-            ))}
-        </ScrollView>
+      <ScrollView contentContainerStyle={styles.scrollView}>
+          {purchases.map((purchase, index) => (
+            <PurchaseItem
+              key={index}
+              purchase={purchase}
+              onDelete={() => deletePurchase(index)}
+            />
+          ))}
+      </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
-    purchaseList: {
-        flex: 1,
+    scrollView: {
+        paddingBottom: 80,  // Добавляем отступ снизу, чтобы избежать наложения на Bottom Bar
     },
 });
 

@@ -82,7 +82,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-    padding: 16,
+    paddingVertical: 10,  // Вертикальные отступы 10 пикселей
+    paddingHorizontal: 20,  // Горизонтальные отступы 20 пикселей
   },
 });
 
