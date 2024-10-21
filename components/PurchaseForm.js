@@ -1,119 +1,73 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View, TextInput, Dimensions} from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 const PurchaseForm = ({
                           newPurchase,
                           onTypeChange,
                           onDescriptionChange,
-                          onDateChange,
                           onPriceChange,
-                          showDatePicker,
-                          setShowDatePicker,
                           addPurchase,
                       }) => {
-    const showDatepicker = () => {
-        setShowDatePicker(true);
-    };
-
     return (
-        <View>
-            <View style={styles.tableRow}>
-                <View style={styles.tableCell}>
-                    <TextInput
-                        style={styles.purchaseTypeInput}
-                        placeholder="Type"
-                        value={newPurchase.type}
-                        onChangeText={onTypeChange}
-                    />
-                </View>
-                <View style={styles.tableCell}>
-                    <TextInput
-                        style={styles.purchaseTypeInput}
-                        placeholder="Description"
-                        value={newPurchase.description}
-                        onChangeText={onDescriptionChange}
-                        multiline
-                        numberOfLines={2}
-                    />
-                </View>
-                <View style={styles.tableCell}>
-                    <TouchableOpacity style={styles.datePickerButton} onPress={showDatepicker}>
-                        <Text style={styles.dateText}>{newPurchase.date.toLocaleDateString()}</Text>
-                    </TouchableOpacity>
-                    {showDatePicker && (
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            value={newPurchase.date}
-                            mode="date"
-                            display="default"
-                            onChange={onDateChange}
-                        />
-                    )}
-                </View>
-                <View style={styles.tableCell}>
-                    <TextInput
-                        style={styles.priceInput}
-                        placeholder="Price"
-                        value={newPurchase.cost}
-                        onChangeText={onPriceChange}
-                        keyboardType="numeric"
-                    />
-                </View>
-            </View>
-            <TouchableOpacity style={styles.addButton} onPress={addPurchase}>
-                <Text style={styles.buttonText}>Add Purchase</Text>
-            </TouchableOpacity>
-        </View>
+      <View style={styles.container}>
+          <Text style={styles.label}>Amount</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="$0.00"
+            keyboardType="numeric"
+            value={newPurchase.cost}
+            onChangeText={onPriceChange}
+          />
+
+          <Text style={styles.label}>Expense made for</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Category"
+            value={newPurchase.type}
+            onChangeText={onTypeChange}
+          />
+
+          <Text style={styles.label}>Description</Text>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter description"
+            value={newPurchase.description}
+            onChangeText={onDescriptionChange}
+          />
+
+          <TouchableOpacity style={styles.addButton} onPress={addPurchase}>
+              <Text style={styles.addButtonText}>Add Purchase</Text>
+          </TouchableOpacity>
+      </View>
     );
 };
 
 const styles = StyleSheet.create({
-    tableRow: {
-        flexDirection: 'row',
-        borderBottomColor: '#ddd',
-        paddingHorizontal: 16,
-        paddingVertical: 8,
+    container: {
+        padding: 16,
     },
-    tableCell: {
-        flex: 1,
-        width: '50%',
-        marginRight: 8,
-    },
-    purchaseTypeInput: {
-        backgroundColor: '#F0F0F0',
-        padding: 8,
-        marginBottom: 4,
-        borderRadius: 4,
-        height: 72,
-    },
-    datePickerButton: {
-        backgroundColor: '#F0F0F0',
-        padding: 8,
-        marginBottom: 4,
-        borderRadius: 4,
-        height: 72,
-    },
-    dateText: {
+    label: {
         fontSize: 16,
+        marginBottom: 8,
+        color: '#333',
     },
-    priceInput: {
+    input: {
         backgroundColor: '#F0F0F0',
-        padding: 8,
-        borderRadius: 4,
-        height: 72,
-        textAlign: 'right',
+        padding: 12,
+        borderRadius: 8,
+        marginBottom: 16,
+        fontSize: 18,
     },
     addButton: {
-        backgroundColor: '#4CAF50',
-        padding: 8,
-        borderRadius: 4,
-        margin: 16,
+        backgroundColor: '#6200EE',
+        padding: 16,
+        borderRadius: 50,
+        alignItems: 'center',
     },
-    buttonText: {
-        color: '#FFFFFF',
+    addButtonText: {
+        color: '#FFF',
         fontWeight: 'bold',
-        textAlign: 'center',
+        fontSize: 18,
     },
 });
 
