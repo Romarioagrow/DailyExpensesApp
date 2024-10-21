@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const PurchaseItem = ({ purchase, onDelete }) => {
     return (
       <View style={styles.item}>
-          <Icon name="coffee" size={24} color="#333" />
+          <Icon name="shopping-cart" size={24} color="#333" />
           <View style={styles.info}>
               <Text style={styles.type}>{purchase.type}</Text>
               <Text style={styles.description}>{purchase.description}</Text>
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     item: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        padding: 16,
+        padding: 18,
         backgroundColor: '#FFFFFF',
         borderRadius: 12,
         marginBottom: 12,

@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Modal, TouchableOpacity, Text } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PurchaseList from './components/PurchaseList';
 import TotalSpending from './components/TotalSpending';
-import PurchaseForm from './components/PurchaseForm';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import ModalForm from './components/ModalForm';
+import BottomNavBar from './components/BottomNavBar';
 
 const App = () => {
   const [purchases, setPurchases] = useState([]);
@@ -61,30 +61,19 @@ const App = () => {
       <TotalSpending totalSpending={totalSpending} />
       <PurchaseList purchases={purchases} deletePurchase={deletePurchase} />
 
-      {/* Модальное окно для формы */}
-      <Modal animationType="slide" transparent={true} visible={showModal}>
-        <View style={styles.modalBackground}>
-          <View style={styles.modalView}>
-            <PurchaseForm
-              newPurchase={newPurchase}
-              onTypeChange={(text) => setNewPurchase({ ...newPurchase, type: text })}
-              onDescriptionChange={(text) => setNewPurchase({ ...newPurchase, description: text })}
-              onPriceChange={(text) => setNewPurchase({ ...newPurchase, cost: text })}
-              addPurchase={addPurchase}
-            />
-            <TouchableOpacity style={styles.closeButton} onPress={() => setShowModal(false)}>
-              <Text style={styles.closeButtonText}>Close</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      {/* Модальное окно вынесено в отдельный компонент */}
+      <ModalForm
+        showModal={showModal}
+        setShowModal={setShowModal}
+        newPurchase={newPurchase}
+        onTypeChange={(text) => setNewPurchase({ ...newPurchase, type: text })}
+        onDescriptionChange={(text) => setNewPurchase({ ...newPurchase, description: text })}
+        onPriceChange={(text) => setNewPurchase({ ...newPurchase, cost: text })}
+        addPurchase={addPurchase}
+      />
 
-      {/* Bottom Navigation Bar */}
-      <View style={styles.bottomBar}>
-        <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
-          <Icon name="add" size={30} color="#FFF" />
-        </TouchableOpacity>
-      </View>
+      {/* Нижний навбар вынесен в отдельный компонент */}
+      <BottomNavBar setShowModal={setShowModal} />
     </View>
   );
 };
@@ -93,62 +82,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-    padding: 16,  // Паддинг для главного экрана
-  },
-  modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.7)', // Затемнённый фон
-  },
-  modalView: {
-    backgroundColor: '#FFFFFF',  // Непрозрачный белый фон
-    padding: 20,
-    borderRadius: 10,
-    marginHorizontal: 16,
-    shadowColor: '#000',
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  closeButton: {
-    backgroundColor: '#FF3B30',
-    padding: 10,
-    borderRadius: 10,
-    marginTop: 20,
-  },
-  closeButtonText: {
-    color: '#FFF',
-    fontWeight: 'bold',
-    textAlign: 'center',
-  },
-  bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 70,
-    backgroundColor: '#FFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 10,
-  },
-  addButton: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#6200EE',
-    borderRadius: 30,
-    justifyContent: 'center',
-    alignItems: 'center',
-    position: 'absolute',
-    top: -30,  // Поднимаем кнопку над Bottom Bar
-    zIndex: 1,
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 10,
+    padding: 16,
   },
 });
 
