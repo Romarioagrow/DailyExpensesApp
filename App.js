@@ -9,47 +9,65 @@ import BottomNavBar from './components/BottomNavBar';
 const App = () => {
   const [purchases, setPurchases] = useState([]);
   const [totalSpending, setTotalSpending] = useState(0);
-  const [newPurchase, setNewPurchase] = useState({ cost: '', type: '', description: '' });
+  const [newPurchase, setNewPurchase] = useState({
+    cost: '',
+    type: '',
+    description: '',
+    date: new Date(), // Указываем дату по умолчанию
+  });
   const [showModal, setShowModal] = useState(false);
 
+  // Подсчет общего расхода
   useEffect(() => {
     const total = purchases.reduce((sum, purchase) => sum + parseFloat(purchase.cost || 0), 0);
     setTotalSpending(total);
   }, [purchases]);
 
+  // Загрузка покупок из AsyncStorage
   useEffect(() => {
     const loadPurchases = async () => {
       try {
         const data = await AsyncStorage.getItem('purchases');
         if (data) {
-          setPurchases(JSON.parse(data));
+          const parsedPurchases = JSON.parse(data).map((purchase) => ({
+            ...purchase,
+            date: new Date(purchase.date), // Преобразуем строку в объект Date
+          }));
+          setPurchases(parsedPurchases);
         }
       } catch (error) {
         console.error('Error loading purchases:', error);
       }
     };
-
     loadPurchases();
   }, []);
 
+  // Сохранение покупок в AsyncStorage
   const savePurchases = async (newPurchases) => {
     try {
-      await AsyncStorage.setItem('purchases', JSON.stringify(newPurchases));
+      const purchasesToSave = newPurchases.map((purchase) => ({
+        ...purchase,
+        date: purchase.date.toISOString(), // Преобразуем дату в строку ISO перед сохранением
+      }));
+      await AsyncStorage.setItem('purchases', JSON.stringify(purchasesToSave));
       setPurchases(newPurchases);
     } catch (error) {
       console.error('Error saving purchases:', error);
     }
   };
 
+  // Добавление новой покупки
   const addPurchase = () => {
     if (!newPurchase.cost || !newPurchase.type) {
       return;
     }
-    savePurchases([...purchases, newPurchase]);
-    setNewPurchase({ cost: '', type: '', description: '' });
+    const newPurchases = [...purchases, { ...newPurchase }];
+    savePurchases(newPurchases);
+    setNewPurchase({ cost: '', type: '', description: '', date: new Date() }); // Сбрасываем форму
     setShowModal(false);
   };
 
+  // Удаление покупки
   const deletePurchase = (index) => {
     const newPurchases = [...purchases];
     newPurchases.splice(index, 1);
@@ -61,7 +79,7 @@ const App = () => {
       <TotalSpending totalSpending={totalSpending} />
       <PurchaseList purchases={purchases} deletePurchase={deletePurchase} />
 
-      {/* Модальное окно вынесено в отдельный компонент */}
+      {/* Модальное окно */}
       <ModalForm
         showModal={showModal}
         setShowModal={setShowModal}
@@ -69,10 +87,11 @@ const App = () => {
         onTypeChange={(text) => setNewPurchase({ ...newPurchase, type: text })}
         onDescriptionChange={(text) => setNewPurchase({ ...newPurchase, description: text })}
         onPriceChange={(text) => setNewPurchase({ ...newPurchase, cost: text })}
+        onDateChange={(date) => setNewPurchase({ ...newPurchase, date: date })} // Обрабатываем дату
         addPurchase={addPurchase}
       />
 
-      {/* Нижний навбар вынесен в отдельный компонент */}
+      {/* Нижний навбар */}
       <BottomNavBar setShowModal={setShowModal} />
     </View>
   );
@@ -82,8 +101,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-    paddingVertical: 10,  // Вертикальные отступы 10 пикселей
-    paddingHorizontal: 20,  // Горизонтальные отступы 20 пикселей
+    paddingVertical: 10,
+    paddingHorizontal: 20,
   },
 });
 

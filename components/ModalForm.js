@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Modal, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import PurchaseForm from './PurchaseForm';
 
-const ModalForm = ({ showModal, setShowModal, newPurchase, onTypeChange, onDescriptionChange, onPriceChange, addPurchase }) => {
+const ModalForm = ({ showModal, setShowModal, newPurchase, onTypeChange, onDescriptionChange, onPriceChange, onDateChange, addPurchase }) => {
   return (
     <Modal animationType="slide" transparent={true} visible={showModal}>
       <View style={styles.modalBackground}>
@@ -12,6 +12,7 @@ const ModalForm = ({ showModal, setShowModal, newPurchase, onTypeChange, onDescr
             onTypeChange={onTypeChange}
             onDescriptionChange={onDescriptionChange}
             onPriceChange={onPriceChange}
+            onDateChange={onDateChange} // Передаем обработку изменения даты
             addPurchase={addPurchase}
           />
           <TouchableOpacity style={styles.closeButton} onPress={() => setShowModal(false)}>
