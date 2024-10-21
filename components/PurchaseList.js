@@ -1,7 +1,7 @@
 import React from 'react';
 import { ScrollView, Text, StyleSheet, View } from 'react-native';
 import PurchaseItem from './PurchaseItem';
-import { format, isToday, isYesterday } from 'date-fns';
+import { format, isToday, isYesterday, compareDesc } from 'date-fns';
 
 const PurchaseList = ({ purchases, deletePurchase }) => {
     // Группируем покупки по дате
@@ -27,9 +27,26 @@ const PurchaseList = ({ purchases, deletePurchase }) => {
         return format(purchaseDate, 'MMMM d, yyyy'); // Пример: "October 22, 2024"
     };
 
+    // Сортировка дат: сначала Today, затем Yesterday, потом остальные
+    const sortedDates = Object.keys(groupedPurchases).sort((a, b) => {
+        const dateA = new Date(a);
+        const dateB = new Date(b);
+
+        // Сначала Today
+        if (isToday(dateA)) return -1;
+        if (isToday(dateB)) return 1;
+
+        // Затем Yesterday
+        if (isYesterday(dateA)) return -1;
+        if (isYesterday(dateB)) return 1;
+
+        // Оставшиеся даты сортируются в обратном порядке
+        return compareDesc(dateA, dateB);
+    });
+
     return (
       <ScrollView contentContainerStyle={styles.scrollView}>
-          {Object.keys(groupedPurchases).map((date) => (
+          {sortedDates.map((date) => (
             <View key={date}>
                 {/* Заголовок для группы по дате */}
                 <Text style={styles.dateHeader}>{getSectionTitle(date)}</Text>
