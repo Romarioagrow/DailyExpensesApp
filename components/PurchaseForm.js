@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const PurchaseForm = ({
@@ -21,50 +21,46 @@ const PurchaseForm = ({
   const onDateSelected = (event, selectedDate) => {
     setShowDatePicker(false);  // Закрываем пикер после выбора
     const currentDate = selectedDate || newPurchase.date;
-    onDateChange(currentDate);  // Передаем выбранную дату
+    onDateChange(currentDate);  // Передаем выбранную дату в родительский компонент
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>Amount</Text>
+    <View>
       <TextInput
         style={styles.input}
-        placeholder="$0.00"
-        keyboardType="numeric"
-        value={newPurchase.cost}
-        onChangeText={onPriceChange}
-      />
-
-      <Text style={styles.label}>Expense made for</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="Category"
+        placeholder="Type"
         value={newPurchase.type}
         onChangeText={onTypeChange}
       />
-
-      <Text style={styles.label}>Description</Text>
       <TextInput
         style={styles.input}
-        placeholder="Enter description"
+        placeholder="Description"
         value={newPurchase.description}
         onChangeText={onDescriptionChange}
       />
+      <TextInput
+        style={styles.input}
+        placeholder="Price"
+        value={newPurchase.cost}
+        onChangeText={onPriceChange}
+        keyboardType="numeric"
+      />
 
-      {/* Кнопка для выбора даты */}
+      {/* Кнопка для открытия DateTimePicker */}
       <TouchableOpacity style={styles.datePickerButton} onPress={showPicker}>
         <Text style={styles.dateText}>
           {newPurchase.date ? newPurchase.date.toLocaleDateString() : 'Select Date'}
         </Text>
       </TouchableOpacity>
 
-      {/* Пикер даты */}
+      {/* Пикер даты с ограничением будущих дат */}
       {showDatePicker && (
         <DateTimePicker
           value={newPurchase.date || new Date()}  // Если даты нет, используем текущую
           mode="date"
           display="default"
           onChange={onDateSelected}
+          maximumDate={new Date()}  // Ограничиваем выбор будущих дат
         />
       )}
 
@@ -76,20 +72,11 @@ const PurchaseForm = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-    color: '#333',
-  },
   input: {
     backgroundColor: '#F0F0F0',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 16,
-    fontSize: 18,
+    padding: 10,
+    marginBottom: 10,
+    borderRadius: 5,
   },
   datePickerButton: {
     backgroundColor: '#F0F0F0',
