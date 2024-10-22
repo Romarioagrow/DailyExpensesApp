@@ -5,11 +5,13 @@ import PurchaseList from './components/PurchaseList';
 import TotalSpending from './components/TotalSpending';
 import ModalForm from './components/ModalForm';
 import BottomNavBar from './components/BottomNavBar';
+import uuid from 'react-native-uuid'; // Импортируем библиотеку для генерации уникальных id
 
 const App = () => {
   const [purchases, setPurchases] = useState([]);
   const [totalSpending, setTotalSpending] = useState(0);
   const [newPurchase, setNewPurchase] = useState({
+    id: '', // Добавляем id для каждой покупки
     cost: '',
     type: '',
     description: '',
@@ -61,16 +63,16 @@ const App = () => {
     if (!newPurchase.cost || !newPurchase.type) {
       return;
     }
-    const newPurchases = [...purchases, { ...newPurchase }];
+    const purchaseWithId = { ...newPurchase, id: uuid.v4() }; // Добавляем уникальный id
+    const newPurchases = [...purchases, purchaseWithId];
     savePurchases(newPurchases);
-    setNewPurchase({ cost: '', type: '', description: '', date: new Date() }); // Сбрасываем форму
+    setNewPurchase({ id: '', cost: '', type: '', description: '', date: new Date() }); // Сбрасываем форму
     setShowModal(false);
   };
 
   // Удаление покупки
-  const deletePurchase = (index) => {
-    const newPurchases = [...purchases];
-    newPurchases.splice(index, 1);
+  const deletePurchase = (id) => {
+    const newPurchases = purchases.filter((purchase) => purchase.id !== id); // Удаляем по id
     savePurchases(newPurchases);
   };
 
