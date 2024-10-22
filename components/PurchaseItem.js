@@ -29,8 +29,9 @@ const PurchaseItem = ({ purchase, onDelete }) => {
 
 const styles = StyleSheet.create({
     itemWrapper: {
-        marginHorizontal: 16, // Внешний отступ по бокам для тени
-        marginBottom: 16,     // Внешний отступ снизу для тени
+        marginHorizontal: 16,  // Внешний отступ по бокам для тени
+        marginBottom: 16,      // Внешний отступ снизу для тени
+        //marginTop: 2,         // Добавляем отступ сверху, чтобы тень не обрезалась
     },
     item: {
         flexDirection: 'row',
@@ -42,8 +43,8 @@ const styles = StyleSheet.create({
         shadowColor: '#000',
         shadowOpacity: 0.1,
         shadowRadius: 10,
-        shadowOffset: { width: 0, height: 5 },
-        elevation: 4,
+        shadowOffset: { width: 0, height: 10 },
+        elevation: 3,
     },
     info: {
         flex: 1,
