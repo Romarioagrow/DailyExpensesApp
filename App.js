@@ -1,19 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import PurchaseList from './components/PurchaseList';
 import TotalSpending from './components/TotalSpending';
 import ModalForm from './components/ModalForm';
-import BottomNavBar from './components/BottomNavBar';
 import uuid from 'react-native-uuid'; // Импортируем библиотеку для генерации уникальных id
+
+const CATEGORIES = {
+  FOOD: 'Food',
+  ALCOHOL: 'Alcohol',
+  TRANSPORT: 'Transport',
+  OTHER: 'Other'
+};
+
+const DAILY_LIMIT = 1500; // Daily spending limit in rubles
 
 const App = () => {
   const [purchases, setPurchases] = useState([]);
   const [totalSpending, setTotalSpending] = useState(0);
+  const [todaySpending, setTodaySpending] = useState(0);
+  const [categoryTotals, setCategoryTotals] = useState({});
   const [newPurchase, setNewPurchase] = useState({
     id: '', // Добавляем id для каждой покупки
     cost: '',
-    type: '',
+    category: '',
     description: '',
     date: new Date(), // Указываем дату по умолчанию
   });
@@ -23,6 +33,24 @@ const App = () => {
   useEffect(() => {
     const total = purchases.reduce((sum, purchase) => sum + parseFloat(purchase.cost || 0), 0);
     setTotalSpending(total);
+
+    // Calculate today's spending
+    const today = new Date();
+    const todayPurchases = purchases.filter(purchase => 
+      purchase.date.getDate() === today.getDate() &&
+      purchase.date.getMonth() === today.getMonth() &&
+      purchase.date.getFullYear() === today.getFullYear()
+    );
+    const todayTotal = todayPurchases.reduce((sum, purchase) => sum + parseFloat(purchase.cost || 0), 0);
+    setTodaySpending(todayTotal);
+
+    // Calculate category totals
+    const catTotals = purchases.reduce((acc, purchase) => {
+      const category = purchase.category || 'Other';
+      acc[category] = (acc[category] || 0) + parseFloat(purchase.cost || 0);
+      return acc;
+    }, {});
+    setCategoryTotals(catTotals);
   }, [purchases]);
 
   // Загрузка покупок из AsyncStorage
@@ -60,13 +88,13 @@ const App = () => {
 
   // Добавление новой покупки
   const addPurchase = () => {
-    if (!newPurchase.cost || !newPurchase.type) {
+    if (!newPurchase.cost || !newPurchase.category) {
       return;
     }
     const purchaseWithId = { ...newPurchase, id: uuid.v4() }; // Добавляем уникальный id
     const newPurchases = [...purchases, purchaseWithId];
     savePurchases(newPurchases);
-    setNewPurchase({ id: '', cost: '', type: '', description: '', date: new Date() }); // Сбрасываем форму
+    setNewPurchase({ id: '', cost: '', category: '', description: '', date: new Date() }); // Сбрасываем форму
     setShowModal(false);
   };
 
@@ -77,25 +105,34 @@ const App = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <TotalSpending totalSpending={totalSpending} />
-      <PurchaseList purchases={purchases} deletePurchase={deletePurchase} />
-
-      {/* Модальное окно */}
+    <SafeAreaView style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#F5FCFF" />
+      <View style={styles.content}>
+        <TotalSpending 
+          totalSpending={totalSpending}
+          todaySpending={todaySpending}
+          dailyLimit={DAILY_LIMIT}
+          categoryTotals={categoryTotals}
+        />
+        <PurchaseList 
+          purchases={purchases} 
+          deletePurchase={deletePurchase} 
+          onAddPress={() => setShowModal(true)}
+        />
+      </View>
+      
       <ModalForm
         showModal={showModal}
         setShowModal={setShowModal}
         newPurchase={newPurchase}
-        onTypeChange={(text) => setNewPurchase({ ...newPurchase, type: text })}
+        categories={CATEGORIES}
+        onCategoryChange={(category) => setNewPurchase({ ...newPurchase, category })}
         onDescriptionChange={(text) => setNewPurchase({ ...newPurchase, description: text })}
         onPriceChange={(text) => setNewPurchase({ ...newPurchase, cost: text })}
-        onDateChange={(date) => setNewPurchase({ ...newPurchase, date: date })} // Обрабатываем дату
+        onDateChange={(date) => setNewPurchase({ ...newPurchase, date })}
         addPurchase={addPurchase}
       />
-
-      {/* Нижний навбар */}
-      <BottomNavBar setShowModal={setShowModal} />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -103,9 +140,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5FCFF',
-    paddingTop: 5,
-    paddingBottom: 10,
-    paddingHorizontal: 20,
+  },
+  content: {
+    flex: 1,
   },
 });
 

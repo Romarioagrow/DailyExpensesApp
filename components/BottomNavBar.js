@@ -1,46 +1,37 @@
 import React from 'react';
-import { View, TouchableOpacity, StyleSheet } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import { TouchableOpacity, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const BottomNavBar = ({ setShowModal }) => {
   return (
-    <View style={styles.bottomBar}>
-      <TouchableOpacity style={styles.addButton} onPress={() => setShowModal(true)}>
-        <Icon name="add" size={30} color="#FFF" />
-      </TouchableOpacity>
-    </View>
+    <TouchableOpacity
+      style={styles.addButton}
+      onPress={() => setShowModal(true)}
+    >
+      <Icon name="plus" size={30} color="#FFF" />
+    </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
-  bottomBar: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: 70,
-    backgroundColor: '#FFF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowRadius: 10,
-    elevation: 10,
-  },
   addButton: {
-    width: 60,
-    height: 60,
+    position: 'absolute',
+    bottom: 20,
+    alignSelf: 'center',
     backgroundColor: '#6200EE',
-    borderRadius: 30,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
     justifyContent: 'center',
     alignItems: 'center',
-    position: 'absolute',
-    top: -30,
-    zIndex: 1,
+    elevation: 6,
     shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 10,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.27,
+    shadowRadius: 4.65,
   },
 });
 
