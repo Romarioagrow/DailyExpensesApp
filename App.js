@@ -7,10 +7,18 @@ import ModalForm from './components/ModalForm';
 import uuid from 'react-native-uuid'; // Импортируем библиотеку для генерации уникальных id
 
 const CATEGORIES = {
+  OTHER: 'Other',
   FOOD: 'Food',
+  GROCERIES: 'Groceries',
   ALCOHOL: 'Alcohol',
   TRANSPORT: 'Transport',
-  OTHER: 'Other'
+  SHOPPING: 'Shopping',
+  ENTERTAINMENT: 'Entertainment',
+  HEALTH: 'Health',
+  HOUSE: 'House',
+  CAFE: 'Cafe',
+  TAXI: 'Taxi',
+  GIFTS: 'Gifts'
 };
 
 const DAILY_LIMIT = 1500; // Daily spending limit in rubles
@@ -28,6 +36,24 @@ const App = () => {
     date: new Date(), // Указываем дату по умолчанию
   });
   const [showModal, setShowModal] = useState(false);
+
+  // Функция очистки всех покупок
+  const clearAllPurchases = async () => {
+    try {
+      await AsyncStorage.removeItem('purchases');
+      setPurchases([]);
+      setTotalSpending(0);
+      setTodaySpending(0);
+      setCategoryTotals({});
+    } catch (error) {
+      console.error('Error clearing purchases:', error);
+    }
+  };
+
+  // Очищаем список при запуске
+  useEffect(() => {
+    clearAllPurchases();
+  }, []);
 
   // Подсчет общего расхода
   useEffect(() => {
@@ -54,23 +80,20 @@ const App = () => {
   }, [purchases]);
 
   // Загрузка покупок из AsyncStorage
-  useEffect(() => {
-    const loadPurchases = async () => {
-      try {
-        const data = await AsyncStorage.getItem('purchases');
-        if (data) {
-          const parsedPurchases = JSON.parse(data).map((purchase) => ({
-            ...purchase,
-            date: new Date(purchase.date), // Преобразуем строку в объект Date
-          }));
-          setPurchases(parsedPurchases);
-        }
-      } catch (error) {
-        console.error('Error loading purchases:', error);
+  const loadPurchases = async () => {
+    try {
+      const data = await AsyncStorage.getItem('purchases');
+      if (data) {
+        const parsedPurchases = JSON.parse(data).map((purchase) => ({
+          ...purchase,
+          date: new Date(purchase.date), // Преобразуем строку в объект Date
+        }));
+        setPurchases(parsedPurchases);
       }
-    };
-    loadPurchases();
-  }, []);
+    } catch (error) {
+      console.error('Error loading purchases:', error);
+    }
+  };
 
   // Сохранение покупок в AsyncStorage
   const savePurchases = async (newPurchases) => {

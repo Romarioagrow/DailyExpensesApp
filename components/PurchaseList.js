@@ -7,9 +7,16 @@ const PurchaseList = ({ purchases, deletePurchase, onAddPress }) => {
   const getCategoryIcon = (category) => {
     const icons = {
       Food: 'silverware-fork-knife',
+      Groceries: 'cart',
       Alcohol: 'glass-wine',
-      Transport: 'car',
+      Transport: 'train-car',
       Shopping: 'shopping',
+      Entertainment: 'gamepad-variant',
+      Health: 'medical-bag',
+      House: 'home',
+      Cafe: 'coffee',
+      Taxi: 'car',
+      Gifts: 'gift',
       Other: 'dots-horizontal',
     };
     return icons[category] || 'dots-horizontal';
@@ -29,18 +36,16 @@ const PurchaseList = ({ purchases, deletePurchase, onAddPress }) => {
         activeOpacity={0.7}
       >
         <View style={styles.iconContainer}>
-          <Icon name={getCategoryIcon(item.category)} size={24} color="#1E90FF" />
+          <Icon name={getCategoryIcon(item.category)} size={24} color="#666" />
         </View>
-        <View style={styles.purchaseInfo}>
-          <Text style={styles.date}>
-            {format(new Date(item.date), 'MMMM d, yyyy')}
-          </Text>
+        <View style={styles.purchaseDetails}>
           <View style={styles.descriptionRow}>
             <Text style={styles.description}>{item.description}</Text>
-            <Text style={styles.category}>{item.category}</Text>
+            <Text style={styles.date}>{format(new Date(item.date), 'dd.MM.yyyy')}</Text>
           </View>
+          <Text style={styles.category}>{item.category}</Text>
         </View>
-        <Text style={styles.amount}>{item.cost}₽</Text>
+        <Text style={styles.cost}>{item.cost}₽</Text>
       </TouchableOpacity>
     </View>
   );
@@ -118,9 +123,10 @@ const styles = StyleSheet.create({
   },
   categoryFilter: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexWrap: 'wrap',
     alignItems: 'flex-start',
     marginBottom: 6,
+    gap: 12,
   },
   categoryButton: {
     alignItems: 'center',
@@ -173,18 +179,13 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F0F8FF',
+    backgroundColor: '#F0F0F0',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: 12,
   },
-  purchaseInfo: {
+  purchaseDetails: {
     flex: 1,
-  },
-  date: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 4,
   },
   descriptionRow: {
     flexDirection: 'row',
@@ -198,12 +199,17 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     flex: 1,
   },
-  category: {
+  date: {
     fontSize: 14,
     color: '#666',
     marginLeft: 8,
   },
-  amount: {
+  category: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 4,
+  },
+  cost: {
     fontSize: 16,
     fontWeight: 'bold',
     color: '#333',
@@ -212,3 +218,4 @@ const styles = StyleSheet.create({
 });
 
 export default PurchaseList;
+

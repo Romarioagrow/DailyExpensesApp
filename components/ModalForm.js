@@ -25,13 +25,21 @@ const ModalForm = ({
   addPurchase,
 }) => {
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [customCategory, setCustomCategory] = useState('');
 
   const getCategoryIcon = (category) => {
     const icons = {
       Food: 'silverware-fork-knife',
+      Groceries: 'cart',
       Alcohol: 'glass-wine',
-      Transport: 'car',
+      Transport: 'train-car',
       Shopping: 'shopping',
+      Entertainment: 'gamepad-variant',
+      Health: 'medical-bag',
+      House: 'home',
+      Cafe: 'coffee',
+      Taxi: 'car',
+      Gifts: 'gift',
       Other: 'dots-horizontal',
     };
     return icons[category] || 'dots-horizontal';
@@ -44,6 +52,18 @@ const ModalForm = ({
     }
   };
 
+  const handleCategorySelect = (category) => {
+    if (category === 'Other') {
+      setCustomCategory('');
+    }
+    onCategoryChange(category);
+  };
+
+  const handleCustomCategoryChange = (text) => {
+    setCustomCategory(text);
+    onCategoryChange(text);
+  };
+
   return (
     <Modal
       animationType="slide"
@@ -54,37 +74,53 @@ const ModalForm = ({
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <ScrollView>
-            <View style={styles.categories}>
-              {Object.values(categories).map((category) => (
-                <TouchableOpacity
-                  key={category}
-                  style={[
-                    styles.categoryButton,
-                    newPurchase.category === category && styles.categoryButtonActive,
-                  ]}
-                  onPress={() => onCategoryChange(category)}
-                >
-                  <View style={[
-                    styles.iconContainer,
-                    newPurchase.category === category && styles.iconContainerActive
-                  ]}>
-                    <Icon
-                      name={getCategoryIcon(category)}
-                      size={24}
-                      color={newPurchase.category === category ? '#FFF' : '#666'}
-                    />
-                  </View>
-                  <Text
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              style={styles.categoriesScroll}
+            >
+              <View style={styles.categories}>
+                {Object.values(categories).map((category) => (
+                  <TouchableOpacity
+                    key={category}
                     style={[
-                      styles.categoryText,
-                      newPurchase.category === category && styles.categoryTextActive,
+                      styles.categoryButton,
+                      newPurchase.category === category && styles.categoryButtonActive,
                     ]}
+                    onPress={() => handleCategorySelect(category)}
                   >
-                    {category}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+                    <View style={[
+                      styles.iconContainer,
+                      newPurchase.category === category && styles.iconContainerActive
+                    ]}>
+                      <Icon
+                        name={getCategoryIcon(category)}
+                        size={24}
+                        color={newPurchase.category === category ? '#FFF' : '#666'}
+                      />
+                    </View>
+                    <Text
+                      style={[
+                        styles.categoryText,
+                        newPurchase.category === category && styles.categoryTextActive,
+                      ]}
+                    >
+                      {category}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </ScrollView>
+
+            {newPurchase.category === 'Other' && (
+              <TextInput
+                style={styles.input}
+                placeholder="Enter custom category"
+                value={customCategory}
+                onChangeText={handleCustomCategoryChange}
+                placeholderTextColor="#999"
+              />
+            )}
 
             <TextInput
               style={styles.input}
@@ -94,16 +130,16 @@ const ModalForm = ({
               placeholderTextColor="#999"
             />
 
-            <TextInput
-              style={styles.input}
-              placeholder="Price"
-              keyboardType="numeric"
-              value={newPurchase.cost}
-              onChangeText={onPriceChange}
-              placeholderTextColor="#999"
-            />
-
             <View style={styles.bottomRow}>
+              <TextInput
+                style={styles.priceInput}
+                placeholder="Price"
+                keyboardType="numeric"
+                value={newPurchase.cost}
+                onChangeText={onPriceChange}
+                placeholderTextColor="#999"
+              />
+
               <TouchableOpacity 
                 style={styles.currencyPicker}
                 onPress={() => {}}
@@ -132,7 +168,11 @@ const ModalForm = ({
               />
             )}
 
-            <TouchableOpacity style={styles.addButton} onPress={addPurchase}>
+            <TouchableOpacity 
+              style={styles.addButton} 
+              onPress={addPurchase}
+              disabled={!newPurchase.cost || (!newPurchase.category && !customCategory)}
+            >
               <Text style={styles.addButtonText}>Add Purchase</Text>
             </TouchableOpacity>
 
@@ -162,15 +202,20 @@ const styles = StyleSheet.create({
     padding: 20,
     maxHeight: '90%',
   },
+  categoriesScroll: {
+    marginBottom: 20,
+  },
   categories: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 30,
-    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   categoryButton: {
     alignItems: 'center',
-    marginVertical: 5,
+    marginHorizontal: 8,
+    minWidth: 70,
+  },
+  categoryButtonActive: {
+    transform: [{scale: 1.05}],
   },
   iconContainer: {
     width: 50,
@@ -185,8 +230,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#1E90FF',
   },
   categoryText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
+    textAlign: 'center',
   },
   categoryTextActive: {
     color: '#1E90FF',
@@ -195,23 +241,38 @@ const styles = StyleSheet.create({
   input: {
     backgroundColor: '#F5F5F5',
     borderRadius: 10,
-    padding: 15,
+    paddingHorizontal: 15,
     marginBottom: 15,
     fontSize: 16,
     color: '#333',
+    height: 50,
   },
   bottomRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    marginBottom: 30,
+    marginBottom: 15,
+    height: 50,
+  },
+  priceInput: {
+    flex: 1,
+    marginRight: 10,
+    height: 50,
+    paddingHorizontal: 15,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 10,
+    fontSize: 16,
+    color: '#333',
   },
   currencyPicker: {
     flexDirection: 'row',
     alignItems: 'center',
+    justifyContent: 'center',
     backgroundColor: '#F5F5F5',
     borderRadius: 10,
-    padding: 15,
-    flex: 0.45,
+    paddingHorizontal: 15,
+    marginRight: 10,
+    minWidth: 70,
+    height: 50,
   },
   currencyText: {
     fontSize: 16,
@@ -224,12 +285,14 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     backgroundColor: '#F5F5F5',
     borderRadius: 10,
-    padding: 15,
-    flex: 0.45,
+    paddingHorizontal: 15,
+    minWidth: 120,
+    height: 50,
   },
   dateText: {
     fontSize: 16,
     color: '#333',
+    marginRight: 10,
   },
   addButton: {
     backgroundColor: '#1E90FF',
