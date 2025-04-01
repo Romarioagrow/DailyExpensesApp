@@ -25,15 +25,26 @@ const TotalSpending = ({ totalSpending, categoryTotals }) => {
     Cafe: '#FFD700',
     Taxi: '#FF8C00',
     Gifts: '#BA55D3',
-    Other: '#A9A9A9'
+    Other: '#A9A9A9',
+    Banki: '#4169E1'
   };
 
   const renderPieChart = () => {
-    let cumulativeAngle = 0;
+    let cumulativeAngle = -90; // Начинаем с -90 градусов (12 часов)
     return segments.map((segment, index) => {
       const startAngle = cumulativeAngle;
       const angle = (segment.percentage / 100) * 360;
       cumulativeAngle += angle;
+      
+      const isLargeArc = angle > 180 ? 1 : 0;
+      const radius = 70; // Радиус окружности
+      const startRad = (startAngle * Math.PI) / 180;
+      const endRad = ((startAngle + angle) * Math.PI) / 180;
+      
+      const startX = radius * Math.cos(startRad);
+      const startY = radius * Math.sin(startRad);
+      const endX = radius * Math.cos(endRad);
+      const endY = radius * Math.sin(endRad);
 
       return (
         <View
@@ -41,21 +52,33 @@ const TotalSpending = ({ totalSpending, categoryTotals }) => {
           style={[
             styles.pieSegment,
             {
-              backgroundColor: CATEGORY_COLORS[segment.category],
+              backgroundColor: CATEGORY_COLORS[segment.category] || '#A9A9A9',
               transform: [
-                { translateX: -40 },
+                { translateX: -70 },
                 { rotate: `${startAngle}deg` },
-                { translateX: 40 }
+                { translateX: 70 }
               ],
-              zIndex: segments.length - index,
-              width: 80,
-              height: 80,
+              width: 140,
+              height: 140,
               position: 'absolute',
-              borderTopRightRadius: 40,
-              borderBottomRightRadius: 40,
+              borderTopRightRadius: angle <= 180 ? 0 : 70,
+              borderBottomRightRadius: angle <= 180 ? 0 : 70,
+              zIndex: segments.length - index,
             }
           ]}
-        />
+        >
+          {angle > 180 && (
+            <View
+              style={{
+                position: 'absolute',
+                left: 70,
+                width: 70,
+                height: 140,
+                backgroundColor: CATEGORY_COLORS[segment.category] || '#A9A9A9',
+              }}
+            />
+          )}
+        </View>
       );
     });
   };
@@ -77,7 +100,7 @@ const TotalSpending = ({ totalSpending, categoryTotals }) => {
               <View 
                 style={[
                   styles.categoryDot,
-                  { backgroundColor: CATEGORY_COLORS[segment.category] }
+                  { backgroundColor: CATEGORY_COLORS[segment.category] || '#A9A9A9' }
                 ]} 
               />
               <Text style={styles.categoryText}>
@@ -126,6 +149,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#F0F0F0',
     position: 'relative',
     overflow: 'hidden',
+  },
+  pieSegment: {
+    position: 'absolute',
+    width: '50%',
+    height: '100%',
+    left: '50%',
+    transformOrigin: 'left center',
   },
   centerText: {
     position: 'absolute',
