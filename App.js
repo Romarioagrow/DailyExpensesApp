@@ -200,47 +200,47 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
+    padding: 15,
+  },
+  totalSpendingCard: {
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 20,
+    elevation: 2,
   },
   addButton: {
     backgroundColor: '#007bff',
-    padding: 12,
-    borderRadius: 10,
-    marginHorizontal: 20,
-    marginVertical: 5,
+    borderRadius: 15,
+    padding: 16,
+    alignItems: 'center',
+    marginTop: 8,
+    marginBottom: 8,
+    elevation: 2,
   },
   addButtonText: {
     color: '#fff',
     fontSize: 16,
     fontWeight: 'bold',
-    textAlign: 'center',
   },
   categoriesContainer: {
-    height: 75,
-    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 8,
+    height: 85,
+    marginBottom: 8,
   },
   categories: {
     flexDirection: 'row',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     paddingVertical: 5,
   },
   categoryButton: {
     alignItems: 'center',
-    marginRight: 15,
+    marginRight: 20,
   },
   categoryButtonActive: {
     opacity: 1,
-  },
-  iconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#f0f0f0',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 4,
-  },
-  iconContainerActive: {
-    backgroundColor: '#007bff',
   },
   categoryText: {
     fontSize: 11,
@@ -252,6 +252,50 @@ const styles = StyleSheet.create({
   },
   purchaseList: {
     flex: 1,
+    marginTop: 0,
+  },
+  purchaseItem: {
+    backgroundColor: '#fff',
+    borderRadius: 15,
+    padding: 15,
+    marginBottom: 12,
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 2,
+  },
+  purchaseInfo: {
+    flex: 1,
+    marginLeft: 15,
+  },
+  purchaseTitle: {
+    fontSize: 16,
+    fontWeight: '500',
+    marginBottom: 4,
+  },
+  purchaseCategory: {
+    fontSize: 14,
+    color: '#666',
+  },
+  purchaseAmount: {
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  purchaseDate: {
+    fontSize: 12,
+    color: '#999',
+    marginTop: 4,
+  },
+  iconContainer: {
+    width: 45,
+    height: 45,
+    borderRadius: 23,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+  },
+  iconContainerActive: {
+    backgroundColor: '#007bff',
   },
 });
 

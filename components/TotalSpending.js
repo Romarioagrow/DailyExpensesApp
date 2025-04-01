@@ -95,8 +95,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFF',
     borderRadius: 20,
-    padding: 10,
-    margin: 10,
+    padding: 20,
+    marginBottom: 8,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
