@@ -1,219 +1,96 @@
-import React, { useMemo } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { format } from 'date-fns';
 
-const PurchaseList = ({ purchases, deletePurchase, onAddPress }) => {
+const PurchaseList = ({ purchase }) => {
+  const { description, category, date, amount } = purchase;
+
   const getCategoryIcon = (category) => {
-    const icons = {
-      Food: 'silverware-fork-knife',
-      Groceries: 'cart',
-      Alcohol: 'glass-wine',
-      Transport: 'train-car',
-      Shopping: 'shopping',
-      Entertainment: 'gamepad-variant',
-      Health: 'medical-bag',
-      House: 'home',
-      Cafe: 'coffee',
-      Taxi: 'car',
-      Gifts: 'gift',
-      Other: 'dots-horizontal',
-    };
-    return icons[category] || 'dots-horizontal';
-  };
-
-  // Get unique categories from purchases
-  const usedCategories = useMemo(() => {
-    const categories = purchases.map(purchase => purchase.category);
-    return [...new Set(categories)];
-  }, [purchases]);
-
-  const renderItem = ({ item }) => (
-    <View style={styles.cardWrapper}>
-      <TouchableOpacity
-        style={styles.purchaseItem}
-        onLongPress={() => deletePurchase(item.id)}
-        activeOpacity={0.7}
-      >
-        <View style={styles.iconContainer}>
-          <Icon name={getCategoryIcon(item.category)} size={24} color="#666" />
-        </View>
-        <View style={styles.purchaseDetails}>
-          <View style={styles.descriptionRow}>
-            <Text style={styles.description}>{item.description}</Text>
-            <Text style={styles.date}>{format(new Date(item.date), 'dd.MM.yyyy')}</Text>
-          </View>
-          <Text style={styles.category}>{item.category}</Text>
-        </View>
-        <Text style={styles.cost}>{item.cost}₽</Text>
-      </TouchableOpacity>
-    </View>
-  );
-
-  const renderCategories = () => {
-    return usedCategories.map((category) => (
-      <View key={`category-${category}`} style={styles.categoryWrapper}>
-        <View style={styles.categoryIcon}>
-          <Icon 
-            name={getCategoryIcon(category)} 
-            size={24} 
-            color="#1E90FF" 
-          />
-        </View>
-        <Text style={styles.categoryText}>•</Text>
-      </View>
-    ));
+    switch (category) {
+      case 'Food': return 'silverware-fork-knife';
+      case 'Groceries': return 'cart';
+      case 'Alcohol': return 'glass-wine';
+      case 'Transport': return 'car';
+      case 'Shopping': return 'shopping';
+      case 'Entertainment': return 'gamepad-variant';
+      case 'Health': return 'medical-bag';
+      case 'House': return 'home';
+      case 'Cafe': return 'coffee';
+      case 'Taxi': return 'taxi';
+      case 'Gifts': return 'gift';
+      default: return 'dots-horizontal';
+    }
   };
 
   return (
-    <View style={styles.container}>
-      <TouchableOpacity 
-        style={styles.addButton}
-        onPress={onAddPress}
-      >
-        <Text style={styles.addButtonText}>Add purchase</Text>
-      </TouchableOpacity>
-      <View style={styles.categoryFilter}>
-        {usedCategories.map((category) => (
-          <TouchableOpacity 
-            key={`category-${category}`} 
-            style={styles.categoryButton}
-          >
-            <View style={styles.categoryIconContainer}>
-              <Icon 
-                name={getCategoryIcon(category)} 
-                size={24} 
-                color="#1E90FF" 
-              />
-            </View>
-            <Text style={styles.categoryLabel}>{category}</Text>
-          </TouchableOpacity>
-        ))}
+    <View style={styles.purchaseItem}>
+      <View style={styles.iconContainer}>
+        <Icon name={getCategoryIcon(category)} size={24} color="#666" />
       </View>
-      <View style={styles.listContainer}>
-        <FlatList
-          data={purchases.sort((a, b) => new Date(b.date) - new Date(a.date))}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
-          contentContainerStyle={styles.listContent}
-          showsVerticalScrollIndicator={false}
-        />
+      <View style={styles.purchaseInfo}>
+        <Text style={styles.description}>{description}</Text>
+        <Text style={styles.category}>{category}</Text>
+      </View>
+      <View style={styles.rightSection}>
+        <Text style={styles.date}>{date}</Text>
+        <Text style={styles.amount}>{amount}₽</Text>
       </View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
-  addButton: {
-    backgroundColor: '#1E90FF',
-    borderRadius: 12,
-    paddingVertical: 12,
-    marginBottom: 8,
-    marginTop: 10,
-  },
-  addButtonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: '600',
-    textAlign: 'center',
-  },
-  categoryFilter: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-start',
-    marginBottom: 6,
-    gap: 12,
-  },
-  categoryButton: {
-    alignItems: 'center',
-    minWidth: 60,
-  },
-  categoryIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#F0F8FF',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginBottom: 5,
-  },
-  categoryLabel: {
-    fontSize: 12,
-    color: '#666',
-    textAlign: 'center',
-  },
-  listContainer: {
-    flex: 1,
-    marginHorizontal: -20,
-  },
-  listContent: {
-    paddingHorizontal: 20,
-    paddingTop: 0,
-    paddingBottom: 20,
-  },
-  cardWrapper: {
-    marginBottom: 8,
-    paddingHorizontal: 4,
-    paddingVertical: 2,
-  },
   purchaseItem: {
     flexDirection: 'row',
     alignItems: 'center',
+    backgroundColor: '#fff',
     padding: 15,
-    backgroundColor: '#FFF',
-    borderRadius: 12,
+    marginHorizontal: 20,
+    marginVertical: 5,
+    borderRadius: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   iconContainer: {
     width: 40,
     height: 40,
     borderRadius: 20,
-    backgroundColor: '#F0F0F0',
+    backgroundColor: '#f0f0f0',
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 12,
+    marginRight: 15,
   },
-  purchaseDetails: {
-    flex: 1,
-  },
-  descriptionRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+  purchaseInfo: {
     flex: 1,
   },
   description: {
     fontSize: 16,
-    color: '#333',
     fontWeight: '500',
-    flex: 1,
-  },
-  date: {
-    fontSize: 14,
-    color: '#666',
-    marginLeft: 8,
+    color: '#333',
   },
   category: {
     fontSize: 14,
     color: '#666',
-    marginTop: 4,
+    marginTop: 2,
   },
-  cost: {
+  rightSection: {
+    alignItems: 'flex-end',
+  },
+  date: {
+    fontSize: 12,
+    color: '#999',
+    marginBottom: 2,
+  },
+  amount: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: '500',
     color: '#333',
-    marginLeft: 15,
   },
 });
 

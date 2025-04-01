@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
 const TotalSpending = ({ totalSpending, categoryTotals }) => {
   const total = Object.values(categoryTotals).reduce((sum, value) => sum + value, 0);
@@ -9,7 +9,7 @@ const TotalSpending = ({ totalSpending, categoryTotals }) => {
     .map(([category, value]) => ({
       category,
       value,
-      percentage: total > 0 ? Math.round((value / total) * 100) : 0
+      percentage: total > 0 ? (value / total) * 100 : 0
     }))
     .sort((a, b) => b.value - a.value);
 
@@ -28,40 +28,50 @@ const TotalSpending = ({ totalSpending, categoryTotals }) => {
     Other: '#A9A9A9'
   };
 
-  let startAngle = -90;
+  const renderPieChart = () => {
+    let cumulativeAngle = 0;
+    return segments.map((segment, index) => {
+      const startAngle = cumulativeAngle;
+      const angle = (segment.percentage / 100) * 360;
+      cumulativeAngle += angle;
+
+      return (
+        <View
+          key={segment.category}
+          style={[
+            styles.pieSegment,
+            {
+              backgroundColor: CATEGORY_COLORS[segment.category],
+              transform: [
+                { translateX: -40 },
+                { rotate: `${startAngle}deg` },
+                { translateX: 40 }
+              ],
+              zIndex: segments.length - index,
+              width: 80,
+              height: 80,
+              position: 'absolute',
+              borderTopRightRadius: 40,
+              borderBottomRightRadius: 40,
+            }
+          ]}
+        />
+      );
+    });
+  };
 
   return (
     <View style={styles.container}>
-      <View style={styles.topSection}>
+      <View style={styles.chartSection}>
         <View style={styles.chartContainer}>
-          <View style={styles.circleOuter}>
-            {segments.map((segment, index) => {
-              const angle = (segment.percentage / 100) * 360;
-              const rotation = startAngle;
-              startAngle += angle;
-
-              return (
-                <View
-                  key={segment.category}
-                  style={[
-                    styles.pieSegment,
-                    {
-                      backgroundColor: CATEGORY_COLORS[segment.category],
-                      transform: [
-                        { rotate: `${rotation}deg` }
-                      ],
-                      zIndex: segments.length - index
-                    }
-                  ]}
-                />
-              );
-            })}
+          <View style={styles.pieContainer}>
+            {renderPieChart()}
           </View>
           <View style={styles.centerText}>
             <Text style={styles.totalAmount}>{totalSpending}₽</Text>
           </View>
         </View>
-        <View style={styles.categories}>
+        <ScrollView style={styles.categoriesList}>
           {segments.map(segment => (
             <View key={segment.category} style={styles.categoryItem}>
               <View 
@@ -71,11 +81,11 @@ const TotalSpending = ({ totalSpending, categoryTotals }) => {
                 ]} 
               />
               <Text style={styles.categoryText}>
-                {segment.category} ({segment.percentage}%)
+                {segment.category} ({Math.round(segment.percentage)}%)
               </Text>
             </View>
           ))}
-        </View>
+        </ScrollView>
       </View>
     </View>
   );
@@ -85,8 +95,8 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFF',
     borderRadius: 20,
-    padding: 15,
-    margin: 20,
+    padding: 10,
+    margin: 10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -96,59 +106,51 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  topSection: {
+  chartSection: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 10,
+    justifyContent: 'space-between',
+    paddingHorizontal: 5,
   },
   chartContainer: {
     position: 'relative',
-    width: 160,
-    height: 160,
+    width: 140,
+    height: 140,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  circleOuter: {
-    width: 160,
-    height: 160,
-    borderRadius: 80,
+  pieContainer: {
+    width: 140,
+    height: 140,
+    borderRadius: 70,
     backgroundColor: '#F0F0F0',
     position: 'relative',
     overflow: 'hidden',
   },
-  pieSegment: {
-    position: 'absolute',
-    width: 80,
-    height: 160,
-    left: 80,
-    top: 0,
-    transformOrigin: 'left center',
-    borderTopRightRadius: 80,
-    borderBottomRightRadius: 80,
-  },
   centerText: {
     position: 'absolute',
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
     backgroundColor: '#FFF',
     justifyContent: 'center',
     alignItems: 'center',
+    elevation: 4,
   },
   totalAmount: {
-    fontSize: 24,
+    fontSize: 20,
     fontWeight: 'bold',
     color: '#333',
   },
-  categories: {
+  categoriesList: {
     flex: 1,
-    marginLeft: 20,
+    marginLeft: 15,
+    maxHeight: 140,
   },
   categoryItem: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 8,
+    marginBottom: 6,
   },
   categoryDot: {
     width: 8,
@@ -157,7 +159,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   categoryText: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#666',
   },
 });

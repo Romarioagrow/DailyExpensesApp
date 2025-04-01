@@ -1,170 +1,256 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Text, ScrollView, SafeAreaView, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import PurchaseList from './components/PurchaseList';
 import TotalSpending from './components/TotalSpending';
+import PurchaseList from './components/PurchaseList';
 import ModalForm from './components/ModalForm';
-import uuid from 'react-native-uuid'; // Импортируем библиотеку для генерации уникальных id
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const CATEGORIES = {
-  OTHER: 'Other',
-  FOOD: 'Food',
-  GROCERIES: 'Groceries',
-  ALCOHOL: 'Alcohol',
-  TRANSPORT: 'Transport',
-  SHOPPING: 'Shopping',
-  ENTERTAINMENT: 'Entertainment',
-  HEALTH: 'Health',
-  HOUSE: 'House',
-  CAFE: 'Cafe',
-  TAXI: 'Taxi',
-  GIFTS: 'Gifts'
+  Other: 'Other',
+  Food: 'Food',
+  Groceries: 'Groceries',
+  Alcohol: 'Alcohol',
+  Transport: 'Transport',
+  Shopping: 'Shopping',
+  Entertainment: 'Entertainment',
+  Health: 'Health',
+  House: 'House',
+  Cafe: 'Cafe',
+  Taxi: 'Taxi',
+  Gifts: 'Gifts'
 };
-
-const DAILY_LIMIT = 1500; // Daily spending limit in rubles
 
 const App = () => {
   const [purchases, setPurchases] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
   const [totalSpending, setTotalSpending] = useState(0);
-  const [todaySpending, setTodaySpending] = useState(0);
   const [categoryTotals, setCategoryTotals] = useState({});
-  const [newPurchase, setNewPurchase] = useState({
-    id: '', // Добавляем id для каждой покупки
-    cost: '',
-    category: '',
-    description: '',
-    date: new Date(), // Указываем дату по умолчанию
-  });
-  const [showModal, setShowModal] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
-  // Функция очистки всех покупок
-  const clearAllPurchases = async () => {
-    try {
-      await AsyncStorage.removeItem('purchases');
-      setPurchases([]);
-      setTotalSpending(0);
-      setTodaySpending(0);
-      setCategoryTotals({});
-    } catch (error) {
-      console.error('Error clearing purchases:', error);
-    }
-  };
-
-  // Очищаем список при запуске
-  useEffect(() => {
-    clearAllPurchases();
-  }, []);
-
-  // Подсчет общего расхода
-  useEffect(() => {
-    const total = purchases.reduce((sum, purchase) => sum + parseFloat(purchase.cost || 0), 0);
-    setTotalSpending(total);
-
-    // Calculate today's spending
-    const today = new Date();
-    const todayPurchases = purchases.filter(purchase => 
-      purchase.date.getDate() === today.getDate() &&
-      purchase.date.getMonth() === today.getMonth() &&
-      purchase.date.getFullYear() === today.getFullYear()
-    );
-    const todayTotal = todayPurchases.reduce((sum, purchase) => sum + parseFloat(purchase.cost || 0), 0);
-    setTodaySpending(todayTotal);
-
-    // Calculate category totals
-    const catTotals = purchases.reduce((acc, purchase) => {
-      const category = purchase.category || 'Other';
-      acc[category] = (acc[category] || 0) + parseFloat(purchase.cost || 0);
-      return acc;
-    }, {});
-    setCategoryTotals(catTotals);
+  // Получаем список используемых категорий
+  const usedCategories = React.useMemo(() => {
+    const categories = new Set(); // Убираем Other из начального набора
+    purchases.forEach(purchase => {
+      if (purchase.category !== 'Other') { // Исключаем Other из списка
+        categories.add(purchase.category);
+      }
+    });
+    return Array.from(categories);
   }, [purchases]);
 
-  // Загрузка покупок из AsyncStorage
+  useEffect(() => {
+    loadPurchases();
+  }, []);
+
+  useEffect(() => {
+    calculateTotals();
+  }, [purchases]);
+
   const loadPurchases = async () => {
     try {
-      const data = await AsyncStorage.getItem('purchases');
-      if (data) {
-        const parsedPurchases = JSON.parse(data).map((purchase) => ({
-          ...purchase,
-          date: new Date(purchase.date), // Преобразуем строку в объект Date
-        }));
-        setPurchases(parsedPurchases);
+      const savedPurchases = await AsyncStorage.getItem('purchases');
+      if (savedPurchases) {
+        setPurchases(JSON.parse(savedPurchases));
       }
     } catch (error) {
       console.error('Error loading purchases:', error);
     }
   };
 
-  // Сохранение покупок в AsyncStorage
-  const savePurchases = async (newPurchases) => {
+  const calculateTotals = () => {
+    const totals = {};
+    let total = 0;
+
+    purchases.forEach(purchase => {
+      total += purchase.amount;
+      totals[purchase.category] = (totals[purchase.category] || 0) + purchase.amount;
+    });
+
+    setTotalSpending(total);
+    setCategoryTotals(totals);
+  };
+
+  const handleAddPurchase = async (purchase) => {
+    const newPurchase = {
+      ...purchase,
+      id: Date.now().toString(),
+    };
+
+    const updatedPurchases = [...purchases, newPurchase];
+    setPurchases(updatedPurchases);
+
     try {
-      const purchasesToSave = newPurchases.map((purchase) => ({
-        ...purchase,
-        date: purchase.date.toISOString(), // Преобразуем дату в строку ISO перед сохранением
-      }));
-      await AsyncStorage.setItem('purchases', JSON.stringify(purchasesToSave));
-      setPurchases(newPurchases);
+      await AsyncStorage.setItem('purchases', JSON.stringify(updatedPurchases));
     } catch (error) {
-      console.error('Error saving purchases:', error);
+      console.error('Error saving purchase:', error);
+    }
+
+    setModalVisible(false);
+  };
+
+  const handleDeletePurchase = async (id) => {
+    const updatedPurchases = purchases.filter(purchase => purchase.id !== id);
+    setPurchases(updatedPurchases);
+
+    try {
+      await AsyncStorage.setItem('purchases', JSON.stringify(updatedPurchases));
+    } catch (error) {
+      console.error('Error deleting purchase:', error);
     }
   };
 
-  // Добавление новой покупки
-  const addPurchase = () => {
-    if (!newPurchase.cost || !newPurchase.category) {
-      return;
+  const getCategoryIcon = (category) => {
+    switch (category) {
+      case 'Food': return 'silverware-fork-knife';
+      case 'Groceries': return 'cart';
+      case 'Alcohol': return 'glass-wine';
+      case 'Transport': return 'car';
+      case 'Shopping': return 'shopping';
+      case 'Entertainment': return 'gamepad-variant';
+      case 'Health': return 'medical-bag';
+      case 'House': return 'home';
+      case 'Cafe': return 'coffee';
+      case 'Taxi': return 'taxi';
+      case 'Gifts': return 'gift';
+      default: return 'dots-horizontal';
     }
-    const purchaseWithId = { ...newPurchase, id: uuid.v4() }; // Добавляем уникальный id
-    const newPurchases = [...purchases, purchaseWithId];
-    savePurchases(newPurchases);
-    setNewPurchase({ id: '', cost: '', category: '', description: '', date: new Date() }); // Сбрасываем форму
-    setShowModal(false);
   };
 
-  // Удаление покупки
-  const deletePurchase = (id) => {
-    const newPurchases = purchases.filter((purchase) => purchase.id !== id); // Удаляем по id
-    savePurchases(newPurchases);
-  };
+  const filteredPurchases = selectedCategory 
+    ? purchases.filter(p => p.category === selectedCategory)
+    : purchases;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#F5FCFF" />
-      <View style={styles.content}>
-        <TotalSpending 
-          totalSpending={totalSpending}
-          todaySpending={todaySpending}
-          dailyLimit={DAILY_LIMIT}
-          categoryTotals={categoryTotals}
-        />
-        <PurchaseList 
-          purchases={purchases} 
-          deletePurchase={deletePurchase} 
-          onAddPress={() => setShowModal(true)}
+    <SafeAreaView style={styles.safeArea}>
+      <StatusBar barStyle="dark-content" backgroundColor="#fff" />
+      <View style={styles.container}>
+        <TotalSpending totalSpending={totalSpending} categoryTotals={categoryTotals} />
+        <TouchableOpacity 
+          style={styles.addButton} 
+          onPress={() => setModalVisible(true)}
+        >
+          <Text style={styles.addButtonText}>Add purchase</Text>
+        </TouchableOpacity>
+        
+        <View style={styles.categoriesContainer}>
+          <ScrollView 
+            horizontal 
+            showsHorizontalScrollIndicator={false}
+          >
+            <View style={styles.categories}>
+              {usedCategories.map((category) => (
+                <TouchableOpacity
+                  key={category}
+                  style={[
+                    styles.categoryButton,
+                    selectedCategory === category && styles.categoryButtonActive,
+                  ]}
+                  onPress={() => setSelectedCategory(selectedCategory === category ? null : category)}
+                >
+                  <View style={[
+                    styles.iconContainer,
+                    selectedCategory === category && styles.iconContainerActive
+                  ]}>
+                    <Icon
+                      name={getCategoryIcon(category)}
+                      size={24}
+                      color={selectedCategory === category ? '#FFF' : '#666'}
+                    />
+                  </View>
+                  <Text
+                    style={[
+                      styles.categoryText,
+                      selectedCategory === category && styles.categoryTextActive,
+                    ]}
+                  >
+                    {category}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </ScrollView>
+        </View>
+
+        <ScrollView style={styles.purchaseList}>
+          {filteredPurchases.map((purchase) => (
+            <PurchaseList
+              key={purchase.id}
+              purchase={purchase}
+              onLongPress={() => handleDeletePurchase(purchase.id)}
+            />
+          ))}
+        </ScrollView>
+        
+        <ModalForm
+          visible={modalVisible}
+          onClose={() => setModalVisible(false)}
+          onSubmit={handleAddPurchase}
+          usedCategories={usedCategories}
         />
       </View>
-      
-      <ModalForm
-        showModal={showModal}
-        setShowModal={setShowModal}
-        newPurchase={newPurchase}
-        categories={CATEGORIES}
-        onCategoryChange={(category) => setNewPurchase({ ...newPurchase, category })}
-        onDescriptionChange={(text) => setNewPurchase({ ...newPurchase, description: text })}
-        onPriceChange={(text) => setNewPurchase({ ...newPurchase, cost: text })}
-        onDateChange={(date) => setNewPurchase({ ...newPurchase, date })}
-        addPurchase={addPurchase}
-      />
     </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
   container: {
     flex: 1,
-    backgroundColor: '#F5FCFF',
   },
-  content: {
+  addButton: {
+    backgroundColor: '#007bff',
+    padding: 12,
+    borderRadius: 10,
+    marginHorizontal: 20,
+    marginVertical: 5,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  categoriesContainer: {
+    height: 75,
+    backgroundColor: '#fff',
+  },
+  categories: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    paddingVertical: 5,
+  },
+  categoryButton: {
+    alignItems: 'center',
+    marginRight: 15,
+  },
+  categoryButtonActive: {
+    opacity: 1,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#f0f0f0',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  iconContainerActive: {
+    backgroundColor: '#007bff',
+  },
+  categoryText: {
+    fontSize: 11,
+    color: '#666',
+  },
+  categoryTextActive: {
+    color: '#007bff',
+    fontWeight: 'bold',
+  },
+  purchaseList: {
     flex: 1,
   },
 });
