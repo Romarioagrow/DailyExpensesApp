@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import { format, startOfWeek, eachDayOfInterval, addDays } from 'date-fns';
+import { format, startOfWeek, eachDayOfInterval, addDays, isToday } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
 const WeeklyChart = ({ expenses, selectedPeriod, onPeriodChange }) => {
@@ -26,6 +26,10 @@ const WeeklyChart = ({ expenses, selectedPeriod, onPeriodChange }) => {
       <View style={styles.periodSelector}>
         <Text style={[
           styles.periodOption,
+          selectedPeriod === 'today' && styles.periodOptionActive
+        ]}>Сегодня</Text>
+        <Text style={[
+          styles.periodOption,
           selectedPeriod === 'week' && styles.periodOptionActive
         ]}>Неделя</Text>
         <Text style={[
@@ -38,20 +42,40 @@ const WeeklyChart = ({ expenses, selectedPeriod, onPeriodChange }) => {
         ]}>Год</Text>
       </View>
 
-      <View style={styles.chart}>
-        {weekDays.map((day, index) => {
-          const dayExpenses = getDayExpenses(day);
-          const height = maxAmount > 0 ? (dayExpenses / maxAmount) * 100 : 0;
+      <View style={styles.chartContainer}>
+        <View style={styles.barsContainer}>
+          {weekDays.map((day, index) => {
+            const dayExpenses = getDayExpenses(day);
+            const height = maxAmount > 0 ? (dayExpenses / maxAmount) * 85 : 0;
+            const isCurrentDay = isToday(day);
 
-          return (
-            <View key={index} style={styles.barContainer}>
-              <View style={[styles.bar, { height: `${height}%` }]} />
-              <Text style={styles.dayLabel}>
+            return (
+              <View key={index} style={styles.barWrapper}>
+                <View style={[
+                  styles.bar, 
+                  { height: `${height}%` },
+                  isCurrentDay && styles.barActive
+                ]} />
+              </View>
+            );
+          })}
+        </View>
+        <View style={styles.labelsContainer}>
+          {weekDays.map((day, index) => {
+            const isCurrentDay = isToday(day);
+            return (
+              <Text 
+                key={index} 
+                style={[
+                  styles.dayLabel,
+                  isCurrentDay && styles.dayLabelActive
+                ]}
+              >
                 {format(day, 'EEEEEE', { locale: ru }).toUpperCase()}
               </Text>
-            </View>
-          );
-        })}
+            );
+          })}
+        </View>
       </View>
     </View>
   );
@@ -60,12 +84,13 @@ const WeeklyChart = ({ expenses, selectedPeriod, onPeriodChange }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFF',
-    padding: 12,
+    paddingTop: 12,
+    paddingHorizontal: 12,
   },
   periodSelector: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 12,
+    marginBottom: 16,
   },
   periodOption: {
     fontSize: 14,
@@ -78,27 +103,47 @@ const styles = StyleSheet.create({
     color: '#000',
     fontWeight: '600',
   },
-  chart: {
-    flexDirection: 'row',
-    height: 100,
-    alignItems: 'flex-end',
-    justifyContent: 'space-between',
+  chartContainer: {
+    height: 140,
+    marginBottom: 8,
   },
-  barContainer: {
+  barsContainer: {
     flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    paddingBottom: 24,
+  },
+  barWrapper: {
+    flex: 1,
+    height: '100%',
     alignItems: 'center',
     justifyContent: 'flex-end',
-    height: '100%',
   },
   bar: {
     width: 16,
     backgroundColor: '#E0E7FF',
     borderRadius: 8,
-    marginBottom: 6,
+  },
+  barActive: {
+    backgroundColor: '#6979F8',
+  },
+  labelsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   dayLabel: {
     fontSize: 11,
     color: '#666',
+    width: 30,
+    textAlign: 'center',
+  },
+  dayLabelActive: {
+    color: '#6979F8',
+    fontWeight: '600',
   },
 });
 
