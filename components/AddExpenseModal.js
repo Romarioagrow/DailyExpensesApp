@@ -28,6 +28,9 @@ const CATEGORIES = [
   { id: 'taxi', name: 'Такси', icon: '🚕' },
   { id: 'internet', name: 'Интернет', icon: '📶' },
   { id: 'phone', name: 'Связь', icon: '📱' },
+  { id: 'car', name: 'Автомобиль', icon: '🚙' },
+  { id: 'tech', name: 'Техника', icon: '📱' },
+  { id: 'subscriptions', name: 'Подписки', icon: '📺' },
 ];
 
 const FIXED_CATEGORIES = CATEGORIES.slice(0, 4); // Первые 4 категории будут фиксированными
