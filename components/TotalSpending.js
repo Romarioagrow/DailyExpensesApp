@@ -5,9 +5,10 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 const TotalSpending = ({ amount, onAddPress }) => {
   return (
     <View style={styles.container}>
+      <Text style={styles.currencySymbol}>₽</Text>
       <View style={styles.content}>
         <Text style={styles.title}>потрачено сегодня</Text>
-        <Text style={styles.amount}>{amount.toLocaleString('ru-RU')} ₽</Text>
+        <Text style={styles.amount}>{amount.toLocaleString('ru-RU')}</Text>
       </View>
       <TouchableOpacity 
         style={styles.addButton}
@@ -26,6 +27,17 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 20,
     paddingTop: 16,
     paddingBottom: 8,
+    paddingHorizontal: 24,
+    position: 'relative',
+  },
+  currencySymbol: {
+    position: 'absolute',
+    left: 24,
+    top: '50%',
+    transform: [{ translateY: -35 }],
+    fontSize: 70,
+    fontWeight: '500',
+    color: '#000',
   },
   content: {
     alignItems: 'center',
