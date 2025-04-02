@@ -39,14 +39,17 @@ const ExpensesList = ({ expenses, onDelete, style }) => {
               {EXPENSE_ICONS[expense.category] || EXPENSE_ICONS.default}
             </Text>
             <View style={styles.expenseInfo}>
-              <Text style={styles.expensePlace}>{expense.place || expense.category}</Text>
+              <Text style={styles.expensePlace}>{expense.place}</Text>
+              <Text style={styles.expenseCategory}>{expense.category}</Text>
+            </View>
+            <View style={styles.rightSection}>
+              <Text style={styles.expenseAmount}>
+                {Number(expense.amount).toLocaleString('ru-RU')} ₽
+              </Text>
               <Text style={styles.expenseDate}>
                 {formatDate(expense.date)}
               </Text>
             </View>
-            <Text style={styles.expenseAmount}>
-              {Number(expense.amount).toLocaleString('ru-RU')} ₽
-            </Text>
           </TouchableOpacity>
         ))}
       </ScrollView>
@@ -89,17 +92,25 @@ const styles = StyleSheet.create({
   expensePlace: {
     fontSize: 16,
     color: '#000',
+    fontWeight: '400',
   },
-  expenseDate: {
-    fontSize: 12,
+  expenseCategory: {
+    fontSize: 13,
     color: '#666',
-    marginTop: 4,
+    marginTop: 2,
+  },
+  rightSection: {
+    alignItems: 'flex-end',
   },
   expenseAmount: {
     fontSize: 16,
     fontWeight: '500',
     color: '#000',
-    marginLeft: 16,
+    marginBottom: 2,
+  },
+  expenseDate: {
+    fontSize: 12,
+    color: '#666',
   },
 });
 
