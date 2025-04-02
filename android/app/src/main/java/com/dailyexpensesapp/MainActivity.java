@@ -1,4 +1,4 @@
-package com.dailyexpensesapp;
+package com.dailyexpensesapp.dev;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
@@ -27,9 +27,9 @@ public class MainActivity extends ReactActivity {
         this,
         getMainComponentName(),
         // If you opted-in for the New Architecture, we enable the Fabric Renderer.
-        DefaultNewArchitectureEntryPoint.getFabricEnabled(), // fabricEnabled
+        DefaultNewArchitectureEntryPoint.getFabricEnabled(),
         // If you opted-in for the New Architecture, we enable Concurrent React (i.e. React 18).
-        DefaultNewArchitectureEntryPoint.getConcurrentReactEnabled() // concurrentRootEnabled
-        );
+        DefaultNewArchitectureEntryPoint.getConcurrentReactEnabled()
+    );
   }
 }

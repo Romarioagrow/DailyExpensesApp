@@ -93,9 +93,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.dailyexpensesapp"
+    namespace "com.dailyexpensesapp.dev"
     defaultConfig {
-        applicationId "com.dailyexpensesapp"
+        applicationId "com.dailyexpensesapp.dev"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

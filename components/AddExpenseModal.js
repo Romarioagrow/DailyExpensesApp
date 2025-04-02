@@ -64,6 +64,7 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
             keyboardType="numeric"
             value={amount}
             onChangeText={setAmount}
+            placeholderTextColor="#666"
           />
 
           <View style={styles.categoriesContainer}>
@@ -93,6 +94,7 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
             placeholder="Место (необязательно)"
             value={place}
             onChangeText={setPlace}
+            placeholderTextColor="#666"
           />
 
           <TouchableOpacity
@@ -158,6 +160,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginBottom: 20,
     textAlign: 'center',
+    color: '#000',
   },
   input: {
     backgroundColor: '#F5F5F5',
@@ -165,6 +168,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginBottom: 15,
     fontSize: 16,
+    color: '#000',
   },
   categoriesContainer: {
     flexDirection: 'row',
