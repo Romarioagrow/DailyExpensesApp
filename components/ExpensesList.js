@@ -22,51 +22,53 @@ const formatDate = (date) => {
   return format(expenseDate, 'd MMMM HH:mm', { locale: ru });
 };
 
-const ExpensesList = ({ expenses, onDelete }) => {
+const ExpensesList = ({ expenses, onDelete, style }) => {
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Text style={styles.title}>Расходы</Text>
-      <View style={styles.listContainer}>
-        <ScrollView>
-          {expenses.map((expense) => (
-            <TouchableOpacity
-              key={expense.id}
-              style={styles.expenseItem}
-              onLongPress={() => onDelete(expense.id)}
-            >
-              <Text style={styles.icon}>
-                {EXPENSE_ICONS[expense.category] || '💰'}
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+        {expenses.map((expense) => (
+          <TouchableOpacity
+            key={expense.id}
+            style={styles.expenseItem}
+            onLongPress={() => onDelete(expense.id)}
+          >
+            <Text style={styles.icon}>
+              {EXPENSE_ICONS[expense.category] || '💰'}
+            </Text>
+            <View style={styles.expenseInfo}>
+              <Text style={styles.expensePlace}>{expense.place || expense.category}</Text>
+              <Text style={styles.expenseDate}>
+                {formatDate(expense.date)}
               </Text>
-              <View style={styles.expenseInfo}>
-                <Text style={styles.expensePlace}>{expense.place || expense.category}</Text>
-                <Text style={styles.expenseDate}>
-                  {formatDate(expense.date)}
-                </Text>
-              </View>
-              <Text style={styles.expenseAmount}>
-                {Number(expense.amount).toLocaleString('ru-RU')} ₽
-              </Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+            </View>
+            <Text style={styles.expenseAmount}>
+              {Number(expense.amount).toLocaleString('ru-RU')} ₽
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     backgroundColor: '#FFF',
-    padding: 16,
   },
   title: {
     fontSize: 18,
     fontWeight: '600',
-    marginBottom: 16,
     color: '#000',
+    padding: 16,
+    paddingBottom: 8,
   },
-  listContainer: {
-    height: 300,
+  scrollView: {
+    flex: 1,
+  },
+  scrollContent: {
+    paddingHorizontal: 16,
   },
   expenseItem: {
     flexDirection: 'row',

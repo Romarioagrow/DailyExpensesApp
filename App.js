@@ -76,12 +76,11 @@ const App = () => {
           />
         </View>
 
-        <View style={styles.card}>
-          <ExpensesList 
-            expenses={expenses}
-            onDelete={deleteExpense}
-          />
-        </View>
+        <ExpensesList 
+          expenses={expenses}
+          onDelete={deleteExpense}
+          style={styles.expensesList}
+        />
 
         <AddExpenseModal
           visible={showModal}
@@ -107,12 +106,12 @@ const styles = StyleSheet.create({
   statsContainer: {
     marginTop: 16,
   },
-  card: {
+  expensesList: {
+    flex: 1,
+    marginTop: 16,
     backgroundColor: '#FFF',
     borderRadius: 20,
-    marginTop: 16,
     overflow: 'hidden',
-    flex: 1,
   },
 });
 
