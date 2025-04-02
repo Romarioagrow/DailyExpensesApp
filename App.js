@@ -5,8 +5,7 @@ import ExpensesList from './components/ExpensesList';
 import TotalSpending from './components/TotalSpending';
 import AddExpenseModal from './components/AddExpenseModal';
 import BottomNavBar from './components/BottomNavBar';
-import WeeklyChart from './components/WeeklyChart';
-import CategorySummary from './components/CategorySummary';
+import ExpandableStats from './components/ExpandableStats';
 import uuid from 'react-native-uuid';
 
 const App = () => {
@@ -65,21 +64,16 @@ const App = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFF" />
       <View style={styles.content}>
-        <TotalSpending 
-          amount={getTodayTotal()} 
-          onAddPress={() => setShowModal(true)}
-        />
-        
-        <View style={styles.card}>
-          <WeeklyChart 
+        <View style={styles.statsContainer}>
+          <TotalSpending 
+            amount={getTodayTotal()} 
+            onAddPress={() => setShowModal(true)}
+          />
+          <ExpandableStats
             expenses={expenses}
             selectedPeriod={selectedPeriod}
             onPeriodChange={setSelectedPeriod}
           />
-        </View>
-
-        <View style={styles.card}>
-          <CategorySummary expenses={expenses} />
         </View>
 
         <View style={styles.card}>
@@ -110,11 +104,15 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 16,
   },
+  statsContainer: {
+    marginTop: 16,
+  },
   card: {
     backgroundColor: '#FFF',
     borderRadius: 20,
     marginTop: 16,
     overflow: 'hidden',
+    flex: 1,
   },
 });
 

@@ -22,15 +22,13 @@ const TotalSpending = ({ amount, onAddPress }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFF',
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingVertical: 16,
-    paddingLeft: 16,
-    paddingRight: 8,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 16,
+    paddingBottom: 8,
   },
   content: {
-    flex: 1,
+    alignItems: 'center',
   },
   title: {
     fontSize: 14,
@@ -41,8 +39,13 @@ const styles = StyleSheet.create({
     fontSize: 32,
     fontWeight: '600',
     color: '#000',
+    marginBottom: 8,
   },
   addButton: {
+    position: 'absolute',
+    right: 16,
+    top: '50%',
+    transform: [{ translateY: -24 }],
     width: 48,
     height: 48,
     borderRadius: 24,
