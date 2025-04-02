@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   chartContainer: {
-    height: 140,
+    height: 120,
     marginBottom: 8,
   },
   barsContainer: {
