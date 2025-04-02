@@ -1,30 +1,26 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
 
-const CATEGORY_ICONS = {
-  'Продукты': '🍔',
-  'Транспорт': '🚗',
-  'Жильё': '🏠',
-  'Одежда': '👗',
-  'Метро': '🚇',
-  'Автобус': '🚌',
-  'default': '💰'
-};
-
 const CategorySummary = ({ expenses }) => {
   // Подсчитываем суммы по категориям
   const categoryTotals = expenses.reduce((acc, expense) => {
     const category = expense.category;
-    acc[category] = (acc[category] || 0) + Number(expense.amount);
+    if (!acc[category]) {
+      acc[category] = {
+        total: 0,
+        icon: expense.icon || '💰'
+      };
+    }
+    acc[category].total += Number(expense.amount);
     return acc;
   }, {});
 
   // Преобразуем в массив и сортируем по убыванию
   const sortedCategories = Object.entries(categoryTotals)
-    .map(([name, total]) => ({
+    .map(([name, data]) => ({
       name,
-      total,
-      icon: CATEGORY_ICONS[name] || CATEGORY_ICONS.default
+      total: data.total,
+      icon: data.icon
     }))
     .sort((a, b) => b.total - a.total);
 

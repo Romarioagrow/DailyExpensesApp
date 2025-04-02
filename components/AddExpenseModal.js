@@ -49,11 +49,14 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
   const handleAdd = () => {
     if (!amount || (!category && !customCategory)) return;
 
+    const selectedCategory = CATEGORIES.find(cat => cat.id === category);
+
     onAdd({
       amount: Number(amount),
-      category: category === 'custom' ? customCategory : CATEGORIES.find(cat => cat.id === category)?.name,
+      category: category === 'custom' ? customCategory : selectedCategory?.name,
+      icon: category === 'custom' ? '💡' : selectedCategory?.icon,
       place,
-      date: date.toISOString(), // Используем дату как есть, т.к. время уже установлено в 0
+      date: date.toISOString(),
     });
 
     // Очищаем форму
@@ -61,11 +64,7 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
     setCategory('');
     setPlace('');
     setCustomCategory('');
-    
-    // Сбрасываем на текущую дату, но с нулевым временем
-    const resetDate = new Date();
-    resetDate.setHours(0, 0, 0, 0);
-    setDate(resetDate);
+    setDate(new Date());
   };
 
   const renderCategoryButton = (cat) => (
