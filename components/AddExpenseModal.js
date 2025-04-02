@@ -8,18 +8,22 @@ import {
   StyleSheet,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CATEGORIES = [
-  'Своё',
-  'Продукты',
-  'Транспорт',
-  'Жильё',
-  'Одежда',
-  'Метро',
-  'Автобус',
+  { id: 'custom', name: 'Своё', icon: '💡' },
+  { id: 'food', name: 'Продукты', icon: '🍔' },
+  { id: 'transport', name: 'Транспорт', icon: '🚗' },
+  { id: 'home', name: 'Жильё', icon: '🏠' },
+  { id: 'clothes', name: 'Одежда', icon: '👗' },
+  { id: 'metro', name: 'Метро', icon: '🚇' },
+  { id: 'bus', name: 'Автобус', icon: '🚌' },
 ];
+
+const FIXED_CATEGORIES = CATEGORIES.slice(0, 4); // Первые 4 категории будут фиксированными
+const SCROLLABLE_CATEGORIES = CATEGORIES.slice(4); // Остальные категории будут в скролле
 
 const AddExpenseModal = ({ visible, onClose, onAdd }) => {
   const [amount, setAmount] = useState('');
@@ -34,7 +38,7 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
 
     onAdd({
       amount: Number(amount),
-      category: category === 'Своё' ? customCategory : category,
+      category: category === 'custom' ? customCategory : CATEGORIES.find(cat => cat.id === category)?.name,
       place,
       date: date.toISOString(),
     });
@@ -46,6 +50,27 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
     setCustomCategory('');
     setDate(new Date());
   };
+
+  const renderCategoryButton = (cat) => (
+    <TouchableOpacity
+      key={cat.id}
+      style={[
+        styles.categoryButton,
+        category === cat.id && styles.categoryButtonActive,
+      ]}
+      onPress={() => setCategory(cat.id)}
+    >
+      <Text style={styles.categoryIcon}>{cat.icon}</Text>
+      <Text
+        style={[
+          styles.categoryButtonText,
+          category === cat.id && styles.categoryButtonTextActive,
+        ]}
+      >
+        {cat.name}
+      </Text>
+    </TouchableOpacity>
+  );
 
   return (
     <Modal
@@ -71,28 +96,23 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
           />
 
           <View style={styles.categoriesContainer}>
-            {CATEGORIES.map((cat) => (
-              <TouchableOpacity
-                key={cat}
-                style={[
-                  styles.categoryButton,
-                  category === cat && styles.categoryButtonActive,
-                ]}
-                onPress={() => setCategory(cat)}
-              >
-                <Text
-                  style={[
-                    styles.categoryButtonText,
-                    category === cat && styles.categoryButtonTextActive,
-                  ]}
-                >
-                  {cat}
-                </Text>
-              </TouchableOpacity>
-            ))}
+            <ScrollView 
+              horizontal 
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.categoriesScrollContent}
+            >
+              <View style={styles.categoriesRows}>
+                <View style={styles.categoryRow}>
+                  {CATEGORIES.slice(0, Math.ceil(CATEGORIES.length/2)).map(renderCategoryButton)}
+                </View>
+                <View style={styles.categoryRow}>
+                  {CATEGORIES.slice(Math.ceil(CATEGORIES.length/2)).map(renderCategoryButton)}
+                </View>
+              </View>
+            </ScrollView>
           </View>
 
-          {category === 'Своё' && (
+          {category === 'custom' && (
             <TextInput
               style={styles.input}
               placeholder="Введите свою категорию"
@@ -184,23 +204,42 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   categoriesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
+    height: 120,
     marginBottom: 15,
+  },
+  categoriesScrollContent: {
+    paddingRight: 20,
+  },
+  categoriesRows: {
+    height: 120,
+    justifyContent: 'space-between',
+  },
+  categoryRow: {
+    flexDirection: 'row',
+    gap: 12,
+    height: 48,
   },
   categoryButton: {
     backgroundColor: '#F5F5F5',
-    borderRadius: 20,
-    paddingVertical: 8,
+    borderRadius: 25,
+    paddingVertical: 12,
     paddingHorizontal: 16,
-    margin: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    width: 160,
+    height: 48,
   },
   categoryButtonActive: {
     backgroundColor: '#000',
   },
+  categoryIcon: {
+    fontSize: 20,
+    marginRight: 8,
+  },
   categoryButtonText: {
     color: '#666',
-    fontSize: 14,
+    fontSize: 16,
+    flex: 1,
   },
   categoryButtonTextActive: {
     color: '#FFF',
