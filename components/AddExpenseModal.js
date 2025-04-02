@@ -14,12 +14,20 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CATEGORIES = [
   { id: 'custom', name: 'Своё', icon: '💡' },
-  { id: 'food', name: 'Продукты', icon: '🍔' },
+  { id: 'food', name: 'Продукты', icon: '🛒' },
+  { id: 'cafe', name: 'Кафе', icon: '☕' },
   { id: 'transport', name: 'Транспорт', icon: '🚗' },
   { id: 'home', name: 'Жильё', icon: '🏠' },
-  { id: 'clothes', name: 'Одежда', icon: '👗' },
-  { id: 'metro', name: 'Метро', icon: '🚇' },
-  { id: 'bus', name: 'Автобус', icon: '🚌' },
+  { id: 'utilities', name: 'ЖКХ', icon: '🔧' },
+  { id: 'clothes', name: 'Одежда', icon: '👕' },
+  { id: 'health', name: 'Здоровье', icon: '💊' },
+  { id: 'entertainment', name: 'Развлечения', icon: '🎮' },
+  { id: 'beauty', name: 'Красота', icon: '💅' },
+  { id: 'gifts', name: 'Подарки', icon: '🎁' },
+  { id: 'sport', name: 'Спорт', icon: '🏃' },
+  { id: 'taxi', name: 'Такси', icon: '🚕' },
+  { id: 'internet', name: 'Интернет', icon: '📶' },
+  { id: 'phone', name: 'Связь', icon: '📱' },
 ];
 
 const FIXED_CATEGORIES = CATEGORIES.slice(0, 4); // Первые 4 категории будут фиксированными
@@ -29,7 +37,12 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
   const [amount, setAmount] = useState('');
   const [category, setCategory] = useState('');
   const [place, setPlace] = useState('');
-  const [date, setDate] = useState(new Date());
+  
+  // Инициализируем дату с нулевым временем
+  const initDate = new Date();
+  initDate.setHours(0, 0, 0, 0);
+  const [date, setDate] = useState(initDate);
+  
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [customCategory, setCustomCategory] = useState('');
 
@@ -40,7 +53,7 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
       amount: Number(amount),
       category: category === 'custom' ? customCategory : CATEGORIES.find(cat => cat.id === category)?.name,
       place,
-      date: date.toISOString(),
+      date: date.toISOString(), // Используем дату как есть, т.к. время уже установлено в 0
     });
 
     // Очищаем форму
@@ -48,7 +61,11 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
     setCategory('');
     setPlace('');
     setCustomCategory('');
-    setDate(new Date());
+    
+    // Сбрасываем на текущую дату, но с нулевым временем
+    const resetDate = new Date();
+    resetDate.setHours(0, 0, 0, 0);
+    setDate(resetDate);
   };
 
   const renderCategoryButton = (cat) => (
@@ -147,7 +164,10 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
               onChange={(event, selectedDate) => {
                 setShowDatePicker(false);
                 if (selectedDate) {
-                  setDate(selectedDate);
+                  // Устанавливаем нулевое время для выбранной даты
+                  const newDate = new Date(selectedDate);
+                  newDate.setHours(0, 0, 0, 0);
+                  setDate(newDate);
                 }
               }}
             />
@@ -212,7 +232,7 @@ const styles = StyleSheet.create({
   },
   categoriesRows: {
     height: 120,
-    justifyContent: 'space-between',
+    gap: 12,
   },
   categoryRow: {
     flexDirection: 'row',

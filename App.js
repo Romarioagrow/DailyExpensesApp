@@ -40,7 +40,6 @@ const App = () => {
     const newExpense = {
       ...expense,
       id: uuid.v4(),
-      date: new Date().toISOString(),
     };
     const newExpenses = [newExpense, ...expenses];
     saveExpenses(newExpenses);
