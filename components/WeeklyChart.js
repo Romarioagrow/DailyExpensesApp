@@ -60,18 +60,18 @@ const WeeklyChart = ({ expenses, selectedPeriod, onPeriodChange }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFF',
-    padding: 16,
+    padding: 12,
   },
   periodSelector: {
     flexDirection: 'row',
     justifyContent: 'center',
-    marginBottom: 16,
+    marginBottom: 12,
   },
   periodOption: {
     fontSize: 14,
     color: '#666',
-    marginHorizontal: 12,
-    paddingVertical: 4,
+    marginHorizontal: 8,
+    paddingVertical: 2,
     paddingHorizontal: 8,
   },
   periodOptionActive: {
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   chart: {
     flexDirection: 'row',
-    height: 150,
+    height: 100,
     alignItems: 'flex-end',
     justifyContent: 'space-between',
   },
@@ -91,13 +91,13 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   bar: {
-    width: 20,
+    width: 16,
     backgroundColor: '#E0E7FF',
-    borderRadius: 10,
-    marginBottom: 8,
+    borderRadius: 8,
+    marginBottom: 6,
   },
   dayLabel: {
-    fontSize: 12,
+    fontSize: 11,
     color: '#666',
   },
 });
