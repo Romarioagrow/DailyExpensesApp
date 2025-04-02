@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ExpensesList from './components/ExpensesList';
 import TotalSpending from './components/TotalSpending';
@@ -8,7 +8,6 @@ import BottomNavBar from './components/BottomNavBar';
 import WeeklyChart from './components/WeeklyChart';
 import CategorySummary from './components/CategorySummary';
 import uuid from 'react-native-uuid';
-import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const App = () => {
   const [expenses, setExpenses] = useState([]);
@@ -66,7 +65,10 @@ const App = () => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFF" />
       <View style={styles.content}>
-        <TotalSpending amount={getTodayTotal()} />
+        <TotalSpending 
+          amount={getTodayTotal()} 
+          onAddPress={() => setShowModal(true)}
+        />
         
         <View style={styles.card}>
           <WeeklyChart 
@@ -86,13 +88,6 @@ const App = () => {
             onDelete={deleteExpense}
           />
         </View>
-
-        <TouchableOpacity 
-          style={styles.addButton}
-          onPress={() => setShowModal(true)}
-        >
-          <Icon name="add" size={24} color="#FFF" />
-        </TouchableOpacity>
 
         <AddExpenseModal
           visible={showModal}
@@ -120,19 +115,6 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     marginTop: 16,
     overflow: 'hidden',
-  },
-  addButton: {
-    position: 'absolute',
-    bottom: 80,
-    right: '50%',
-    transform: [{ translateX: 28 }],
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    backgroundColor: '#6979F8',
-    justifyContent: 'center',
-    alignItems: 'center',
-    elevation: 4,
   },
 });
 

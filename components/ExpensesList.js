@@ -1,57 +1,55 @@
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { format, isToday, isYesterday } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
 const EXPENSE_ICONS = {
   'Продукты': '🍔',
   'Транспорт': '🚗',
-  'Метро': '🚇',
-  'Автобус': '🚌',
-  'Одежда': '👗',
   'Жильё': '🏠',
+  'Одежда': '👗',
+  'Метро': '🚇',
+};
+
+const formatDate = (date) => {
+  const expenseDate = new Date(date);
+  if (isToday(expenseDate)) {
+    return `Сегодня ${format(expenseDate, 'HH:mm')}`;
+  }
+  if (isYesterday(expenseDate)) {
+    return `Вчера ${format(expenseDate, 'HH:mm')}`;
+  }
+  return format(expenseDate, 'd MMMM HH:mm', { locale: ru });
 };
 
 const ExpensesList = ({ expenses, onDelete }) => {
-  const formatDate = (date) => {
-    const expenseDate = new Date(date);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(yesterday.getDate() - 1);
-
-    if (expenseDate.toDateString() === today.toDateString()) {
-      return `Сегодня ${format(expenseDate, 'HH:mm')}`;
-    } else if (expenseDate.toDateString() === yesterday.toDateString()) {
-      return `Вчера ${format(expenseDate, 'HH:mm')}`;
-    } else {
-      return format(expenseDate, 'd MMMM', { locale: ru });
-    }
-  };
-
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Расходы</Text>
-      <ScrollView style={styles.scrollContent}>
-        {expenses.map((expense) => (
-          <TouchableOpacity
-            key={expense.id}
-            style={styles.expenseItem}
-            onLongPress={() => onDelete(expense.id)}
-          >
-            <View style={styles.expenseIcon}>
-              <Text style={styles.icon}>{EXPENSE_ICONS[expense.category] || '📝'}</Text>
-            </View>
-            <View style={styles.expenseInfo}>
-              <Text style={styles.expensePlace}>{expense.place || ''}</Text>
-              <Text style={styles.expenseCategory}>{expense.category}</Text>
-            </View>
-            <View style={styles.expenseDetails}>
-              <Text style={styles.expenseAmount}>{expense.amount} ₽</Text>
-              <Text style={styles.expenseDate}>{formatDate(expense.date)}</Text>
-            </View>
-          </TouchableOpacity>
-        ))}
-      </ScrollView>
+      <View style={styles.listContainer}>
+        <ScrollView>
+          {expenses.map((expense) => (
+            <TouchableOpacity
+              key={expense.id}
+              style={styles.expenseItem}
+              onLongPress={() => onDelete(expense.id)}
+            >
+              <Text style={styles.icon}>
+                {EXPENSE_ICONS[expense.category] || '💰'}
+              </Text>
+              <View style={styles.expenseInfo}>
+                <Text style={styles.expensePlace}>{expense.place || expense.category}</Text>
+                <Text style={styles.expenseDate}>
+                  {formatDate(expense.date)}
+                </Text>
+              </View>
+              <Text style={styles.expenseAmount}>
+                {Number(expense.amount).toLocaleString('ru-RU')} ₽
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
     </View>
   );
 };
@@ -67,25 +65,19 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     color: '#000',
   },
-  scrollContent: {
-    maxHeight: 200,
+  listContainer: {
+    height: 300,
   },
   expenseItem: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: '#F0F0F0',
   },
-  expenseIcon: {
-    width: 40,
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   icon: {
     fontSize: 24,
+    marginRight: 12,
   },
   expenseInfo: {
     flex: 1,
@@ -93,25 +85,17 @@ const styles = StyleSheet.create({
   expensePlace: {
     fontSize: 16,
     color: '#000',
-    marginBottom: 4,
-  },
-  expenseCategory: {
-    fontSize: 14,
-    color: '#666',
-  },
-  expenseDetails: {
-    alignItems: 'flex-end',
-  },
-  expenseAmount: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-    marginLeft: 16,
   },
   expenseDate: {
     fontSize: 12,
     color: '#666',
     marginTop: 4,
+  },
+  expenseAmount: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#000',
+    marginLeft: 16,
   },
 });
 
