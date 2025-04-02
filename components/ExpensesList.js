@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
-import { format } from 'date-fns';
+import { format, isToday, isYesterday } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
 const EXPENSE_ICONS = {
@@ -31,7 +31,7 @@ const ExpensesList = ({ expenses, onDelete }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Расходы</Text>
-      <ScrollView style={styles.list}>
+      <ScrollView style={styles.scrollContent}>
         {expenses.map((expense) => (
           <TouchableOpacity
             key={expense.id}
@@ -42,8 +42,8 @@ const ExpensesList = ({ expenses, onDelete }) => {
               <Text style={styles.icon}>{EXPENSE_ICONS[expense.category] || '📝'}</Text>
             </View>
             <View style={styles.expenseInfo}>
-              <Text style={styles.expenseName}>{expense.category}</Text>
               <Text style={styles.expensePlace}>{expense.place || ''}</Text>
+              <Text style={styles.expenseCategory}>{expense.category}</Text>
             </View>
             <View style={styles.expenseDetails}>
               <Text style={styles.expenseAmount}>{expense.amount} ₽</Text>
@@ -58,22 +58,21 @@ const ExpensesList = ({ expenses, onDelete }) => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#FFF',
-    borderRadius: 20,
     padding: 16,
-    marginTop: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: '600',
     marginBottom: 16,
+    color: '#000',
   },
-  list: {
-    flex: 1,
+  scrollContent: {
+    maxHeight: 200,
   },
   expenseItem: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 12,
     borderBottomWidth: 1,
@@ -90,16 +89,15 @@ const styles = StyleSheet.create({
   },
   expenseInfo: {
     flex: 1,
-    marginLeft: 12,
-  },
-  expenseName: {
-    fontSize: 16,
-    fontWeight: '500',
   },
   expensePlace: {
+    fontSize: 16,
+    color: '#000',
+    marginBottom: 4,
+  },
+  expenseCategory: {
     fontSize: 14,
     color: '#666',
-    marginTop: 2,
   },
   expenseDetails: {
     alignItems: 'flex-end',
@@ -107,11 +105,13 @@ const styles = StyleSheet.create({
   expenseAmount: {
     fontSize: 16,
     fontWeight: '600',
+    color: '#000',
+    marginLeft: 16,
   },
   expenseDate: {
     fontSize: 12,
     color: '#666',
-    marginTop: 2,
+    marginTop: 4,
   },
 });
 

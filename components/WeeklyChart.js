@@ -60,9 +60,7 @@ const WeeklyChart = ({ expenses, selectedPeriod, onPeriodChange }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFF',
-    borderRadius: 20,
     padding: 16,
-    marginTop: 16,
   },
   periodSelector: {
     flexDirection: 'row',

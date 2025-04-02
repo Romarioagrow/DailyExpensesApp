@@ -5,7 +5,7 @@ const TotalSpending = ({ amount }) => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>потрачено сегодня</Text>
-      <Text style={styles.amount}>{amount} ₽</Text>
+      <Text style={styles.amount}>{amount.toLocaleString('ru-RU')} ₽</Text>
     </View>
   );
 };
@@ -13,19 +13,17 @@ const TotalSpending = ({ amount }) => {
 const styles = StyleSheet.create({
   container: {
     backgroundColor: '#FFF',
-    borderRadius: 20,
-    padding: 20,
-    marginTop: 16,
     alignItems: 'center',
+    paddingVertical: 16,
   },
   title: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#666',
-    marginBottom: 8,
+    marginBottom: 4,
   },
   amount: {
-    fontSize: 36,
-    fontWeight: 'bold',
+    fontSize: 32,
+    fontWeight: '600',
     color: '#000',
   },
 });

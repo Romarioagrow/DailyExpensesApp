@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ExpensesList from './components/ExpensesList';
 import TotalSpending from './components/TotalSpending';
@@ -8,13 +8,13 @@ import BottomNavBar from './components/BottomNavBar';
 import WeeklyChart from './components/WeeklyChart';
 import CategorySummary from './components/CategorySummary';
 import uuid from 'react-native-uuid';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const App = () => {
   const [expenses, setExpenses] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [selectedPeriod, setSelectedPeriod] = useState('week'); // week, month, year
+  const [selectedPeriod, setSelectedPeriod] = useState('week');
 
-  // Загрузка расходов при старте
   useEffect(() => {
     loadExpenses();
   }, []);
@@ -68,18 +68,31 @@ const App = () => {
       <View style={styles.content}>
         <TotalSpending amount={getTodayTotal()} />
         
-        <WeeklyChart 
-          expenses={expenses}
-          selectedPeriod={selectedPeriod}
-          onPeriodChange={setSelectedPeriod}
-        />
+        <View style={styles.card}>
+          <WeeklyChart 
+            expenses={expenses}
+            selectedPeriod={selectedPeriod}
+            onPeriodChange={setSelectedPeriod}
+          />
+        </View>
 
-        <CategorySummary expenses={expenses} />
+        <View style={styles.card}>
+          <CategorySummary expenses={expenses} />
+        </View>
 
-        <ExpensesList 
-          expenses={expenses}
-          onDelete={deleteExpense}
-        />
+        <View style={styles.card}>
+          <ExpensesList 
+            expenses={expenses}
+            onDelete={deleteExpense}
+          />
+        </View>
+
+        <TouchableOpacity 
+          style={styles.addButton}
+          onPress={() => setShowModal(true)}
+        >
+          <Icon name="add" size={24} color="#FFF" />
+        </TouchableOpacity>
 
         <AddExpenseModal
           visible={showModal}
@@ -87,9 +100,7 @@ const App = () => {
           onAdd={addExpense}
         />
 
-        <BottomNavBar
-          onAddPress={() => setShowModal(true)}
-        />
+        <BottomNavBar />
       </View>
     </SafeAreaView>
   );
@@ -103,6 +114,25 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     paddingHorizontal: 16,
+  },
+  card: {
+    backgroundColor: '#FFF',
+    borderRadius: 20,
+    marginTop: 16,
+    overflow: 'hidden',
+  },
+  addButton: {
+    position: 'absolute',
+    bottom: 80,
+    right: '50%',
+    transform: [{ translateX: 28 }],
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#6979F8',
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 4,
   },
 });
 
