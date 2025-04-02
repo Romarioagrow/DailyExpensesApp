@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, SafeAreaView, StatusBar } from 'react-native';
+import { View, StyleSheet, SafeAreaView, StatusBar, ScrollView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ExpensesList from './components/ExpensesList';
 import TotalSpending from './components/TotalSpending';
 import AddExpenseModal from './components/AddExpenseModal';
-import BottomNavBar from './components/BottomNavBar';
 import ExpandableStats from './components/ExpandableStats';
 import uuid from 'react-native-uuid';
 
@@ -63,7 +62,7 @@ const App = () => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor="#FFF" />
-      <View style={styles.content}>
+      <ScrollView style={styles.content} contentContainerStyle={styles.scrollContent}>
         <View style={styles.statsContainer}>
           <TotalSpending 
             amount={getTodayTotal()} 
@@ -87,9 +86,7 @@ const App = () => {
           onClose={() => setShowModal(false)}
           onAdd={addExpense}
         />
-
-        <BottomNavBar />
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -101,13 +98,15 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  scrollContent: {
     paddingHorizontal: 16,
+    paddingBottom: 16,
   },
   statsContainer: {
     marginTop: 16,
   },
   expensesList: {
-    flex: 1,
     marginTop: 16,
     backgroundColor: '#FFF',
     borderRadius: 20,
