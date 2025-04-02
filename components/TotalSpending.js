@@ -14,7 +14,9 @@ const TotalSpending = ({ amount, onAddPress }) => {
         style={styles.addButton}
         onPress={onAddPress}
       >
-        <Icon name="add" size={24} color="#FFF" />
+        <View style={styles.addButtonInner}>
+          <Icon name="add" size={28} color="#FFF" />
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -29,6 +31,7 @@ const styles = StyleSheet.create({
     paddingBottom: 8,
     paddingHorizontal: 24,
     position: 'relative',
+    height: 120,
   },
   currencySymbol: {
     position: 'absolute',
@@ -55,16 +58,33 @@ const styles = StyleSheet.create({
   },
   addButton: {
     position: 'absolute',
-    right: 16,
+    right: 24,
     top: '50%',
-    transform: [{ translateY: -24 }],
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    transform: [{ translateY: -20 }],
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: '#6979F8',
     justifyContent: 'center',
     alignItems: 'center',
-    elevation: 4,
+    elevation: 8,
+    shadowColor: '#6979F8',
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+  },
+  addButtonInner: {
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: '#6979F8',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: 'rgba(255, 255, 255, 0.2)',
   },
 });
 
