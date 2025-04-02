@@ -9,6 +9,8 @@ const EXPENSE_ICONS = {
   'Жильё': '🏠',
   'Одежда': '👗',
   'Метро': '🚇',
+  'Автобус': '🚌',
+  'default': '💰'
 };
 
 const formatDate = (date) => {
@@ -34,7 +36,7 @@ const ExpensesList = ({ expenses, onDelete, style }) => {
             onLongPress={() => onDelete(expense.id)}
           >
             <Text style={styles.icon}>
-              {EXPENSE_ICONS[expense.category] || '💰'}
+              {EXPENSE_ICONS[expense.category] || EXPENSE_ICONS.default}
             </Text>
             <View style={styles.expenseInfo}>
               <Text style={styles.expensePlace}>{expense.place || expense.category}</Text>

@@ -12,6 +12,7 @@ import {
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 const CATEGORIES = [
+  'Своё',
   'Продукты',
   'Транспорт',
   'Жильё',
@@ -26,13 +27,14 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
   const [place, setPlace] = useState('');
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [customCategory, setCustomCategory] = useState('');
 
   const handleAdd = () => {
-    if (!amount || !category) return;
+    if (!amount || (!category && !customCategory)) return;
 
     onAdd({
       amount: Number(amount),
-      category,
+      category: category === 'Своё' ? customCategory : category,
       place,
       date: date.toISOString(),
     });
@@ -41,6 +43,7 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
     setAmount('');
     setCategory('');
     setPlace('');
+    setCustomCategory('');
     setDate(new Date());
   };
 
@@ -89,9 +92,19 @@ const AddExpenseModal = ({ visible, onClose, onAdd }) => {
             ))}
           </View>
 
+          {category === 'Своё' && (
+            <TextInput
+              style={styles.input}
+              placeholder="Введите свою категорию"
+              value={customCategory}
+              onChangeText={setCustomCategory}
+              placeholderTextColor="#666"
+            />
+          )}
+
           <TextInput
             style={styles.input}
-            placeholder="Место (необязательно)"
+            placeholder="Описание"
             value={place}
             onChangeText={setPlace}
             placeholderTextColor="#666"
